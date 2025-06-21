@@ -4,3 +4,4 @@ dist/
 build/
 printers.json
 *.spec
+*.bak
