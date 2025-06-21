@@ -10,6 +10,10 @@ from custom_inputs import (
 from actions import install_printer
 from storage import Storage
 
+# TODO: Add/Remove Location functionality
+# TODO: Restore from backup functionality
+# TODO: Maybe export as HTML for better overview
+# TODO: GUI - ???
 
 def main():
 
