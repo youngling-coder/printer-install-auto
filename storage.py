@@ -19,12 +19,12 @@ class Storage:
         print()
         print(prettified_printer_output(0, printer))
         print(
-            f'{Style.BRIGHT}Will be added to "{Fore.CYAN + location.name.capitalize() + Fore.RESET}"'
+            f'{Style.BRIGHT}Will be added to "{Fore.CYAN + location.name + Fore.RESET}"'
         )
 
-        check_data = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
+        action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
 
-        if check_data:
+        if action_confirmed:
             location.add_printer(printer)
             self.write_dict_as_json()
 
@@ -32,23 +32,62 @@ class Storage:
                 f"{Style.BRIGHT + Fore.GREEN}\n✅ Printer added successfully!{Style.RESET_ALL}"
             )
 
-    def add_location(self, location_name):
+    def add_location(self, location_name, save: bool = True) -> "Location":
 
-        if self.__locations[location_name]:
-            print(f"{Style.BRIGHT}")
+        if self.get_location_by_name(location_name):
+            print(
+                f"{Style.BRIGHT + Fore.YELLOW}\n⚠️  Location already exists!{Style.RESET_ALL}"
+            )
+
+        else:
+
+            self.__locations.append(Location(location_name))
+            print(
+                f"{Style.BRIGHT + Fore.GREEN}\n✅ Location is created!{Style.RESET_ALL}"
+            )
+
+            if save:
+                self.write_dict_as_json()
+
+            return self.__locations[-1]
+
+    def remove_location(self, location_idx) -> None:
+
+        location = self.get_location_by_index(location_idx)
+
+        if location and location.get_printers():
+            print(
+                f"{Style.BRIGHT + Fore.YELLOW}\n⚠️  '{location.name}' location contain printers!{Style.RESET_ALL} Delete all the printers from this location first!"
+            )
+
+        else:
+            try:
+                action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
+
+                if action_confirmed:
+                    self.__locations.remove(location)
+                    self.write_dict_as_json()
+                    print(
+                        f"{Style.BRIGHT + Fore.GREEN}\n✅ '{location.name}' location is removed!{Style.RESET_ALL}"
+                    )
+
+            except ValueError as e:
+                print(
+                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Skipping '{location.name}' as it is not present in the list!{Style.RESET_ALL}"
+                )
 
     def remove_printer_from_location(
         self, printer: "Printer", location: "Location"
     ) -> None:
 
         print(
-            f"\n{Fore.YELLOW + Style.BRIGHT}⚠️ All the info about this printer will be removed!\n"
+            f"{Fore.YELLOW + Style.BRIGHT}⚠️  All the info about this printer will be removed!\n"
         )
         print(prettified_printer_output(0, printer))
 
-        confirm_deletion = custom_inputs.get_yn_confirmation("\nProceed? [Y/n]: ")
+        action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
 
-        if confirm_deletion:
+        if action_confirmed:
 
             location_printers = location.get_printers()
 
@@ -61,8 +100,8 @@ class Storage:
                 f"{Style.BRIGHT + Fore.GREEN}\n✅ Printer removed successfully!{Style.RESET_ALL}"
             )
 
-    def get_location_by_id(self, location_id: int) -> "Location":
-        return self.__locations[location_id]
+    def get_location_by_index(self, location_idx: int) -> "Location":
+        return self.__locations[location_idx]
 
     def is_ip_unique(self, ip):
         for printer in self.get_printers():
@@ -86,11 +125,6 @@ class Storage:
 
         return
 
-    def add_location(self, name: str) -> "Location":
-        self.__locations.append(Location(name))
-
-        return self.__locations[-1]
-
     def to_dict(self) -> dict:
 
         json = {}
@@ -112,7 +146,7 @@ class Storage:
 
         return printers
 
-    def __read_json(self, path: str = "printers.json"):
+    def __read_json(self, path: str = "printers.json") -> dict:
 
         if not os.path.exists(path):
             raise FileNotFoundError(
@@ -133,7 +167,8 @@ class Storage:
         printers_locations_json = self.__read_json()
 
         for location_name in printers_locations_json.keys():
-            location = self.add_location(location_name)
+
+            location = self.add_location(location_name, save=False)
 
             for printer in printers_locations_json[location_name]:
                 new_printer = Printer.from_dict(printer)

@@ -3,15 +3,13 @@ from colorama import Style, Fore
 from custom_inputs import (
     get_current_action,
     input_printer_data,
-    get_location_id_input,
-    get_printer_id_input,
     select_printer_data,
+    get_location_index_input,
+    get_generic_input,
 )
 from actions import install_printer
 from storage import Storage
 
-# TODO: Add/Remove Location functionality
-# TODO: Restore from backup functionality
 # TODO: Maybe export as HTML for better overview
 # TODO: GUI - ???
 
@@ -43,11 +41,21 @@ def main():
                 printer, _ = select_printer_data(storage)
                 install_printer(printer)
 
+            case 4:
+                location_name = get_generic_input(
+                    "Enter new location's name: ", empty=False
+                )
+                storage.add_location(location_name)
+
+            case 5:
+                location_idx = get_location_index_input(storage.get_locations())
+                storage.remove_location(location_idx)
+
             case 6:
                 storage.restore_from_backup()
 
         input(
-            f"\n{Style.BRIGHT + Fore.CYAN}Press ENTER to continue...\n{Style.RESET_ALL}"
+            f"{Style.BRIGHT + Fore.CYAN}Press ENTER to continue...\n{Style.RESET_ALL}"
         )
 
 
