@@ -1,25 +1,23 @@
 from colorama import Style, Fore
 
 
-total_actions_count = 5
+actions = [
+    "Add a printer with name, IP, and driver",
+    "Remove a printer by place and IP",
+    "Install a printer",
+    "Add a location",
+    "Remove a location",
+    "Restore last state",
+]
 
-
-actions = {
-    1: "Add a printer with name, IP, and driver",
-    2: "Remove a printer by place and IP",
-    3: "Install a printer",
-    4: "Add a location",
-    5: "Remove a location",
-    6: "Restore last state",
-}
+total_actions_count = len(actions)
 
 
 def help_():
-    print(f"{Fore.CYAN + Style.BRIGHT}Commands {Style.RESET_ALL}\n")
+    print(f"{Fore.CYAN + Style.BRIGHT}Commands: {Style.RESET_ALL}\n")
 
-    for idx, action in actions.items():
-
-        print(f"{idx}. {action}")
+    for idx, action in enumerate(actions):
+        print(f"{idx+1}  ::  {action}")
 
     print()
 
@@ -39,7 +37,7 @@ def prettified_printer_output(idx: int, printer) -> str:
 
 def prettified_location_output(idx: int, location) -> str:
 
-    return f"{Style.BRIGHT}{idx+1}. {location.capitalize()}{Style.RESET_ALL}"
+    return f"{Style.BRIGHT}{idx+1}  ::  {location.capitalize()}{Style.RESET_ALL}"
 
 
 def prettified_locations_output(locations: list) -> str:
