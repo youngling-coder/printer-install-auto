@@ -32,6 +32,11 @@ class Storage:
                 f"{Style.BRIGHT + Fore.GREEN}\n✅ Printer added successfully!{Style.RESET_ALL}"
             )
 
+    def add_location(self, location_name):
+
+        if self.__locations[location_name]:
+            print(f"{Style.BRIGHT}")
+
     def remove_printer_from_location(
         self, printer: "Printer", location: "Location"
     ) -> None:

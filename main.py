@@ -40,14 +40,8 @@ def main():
                 storage.remove_printer_from_location(printer, location)
 
             case 3:
-                printer, location = select_printer_data(storage)
-
-                install_printer(
-                    printer.ip,
-                    printer.name,
-                    printer.driver_inf_path,
-                    printer.driver_name,
-                )
+                printer, _ = select_printer_data(storage)
+                install_printer(printer)
 
             case 6:
                 storage.restore_from_backup()
