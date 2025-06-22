@@ -23,6 +23,7 @@ def get_generic_input(prompt: str, empty: bool = True) -> str:
 
     while True:
         value = input(prompt)
+        print()
 
         if value.lower() == "exit":
             sys.exit(0)
@@ -78,7 +79,7 @@ def get_integer_input(prompt: str, range_: Optional[range] = None):
             print(e)
 
 
-def get_printer_id_input(location: Location):
+def get_printer_index_input(location: Location):
     for idx, printer in enumerate(location.get_printers()):
         print(prettified_printer_output(idx, printer))
 
@@ -89,7 +90,7 @@ def get_printer_id_input(location: Location):
     return printer_id - 1
 
 
-def get_location_id_input(locations: Location) -> int:
+def get_location_index_input(locations: Location) -> int:
 
     print()
     print(prettified_locations_output(locations))
@@ -97,7 +98,6 @@ def get_location_id_input(locations: Location) -> int:
     location_id = get_integer_input(
         "Enter city number: ", range_=range(1, len(locations) + 1)
     )
-    print()
 
     return location_id - 1
 
@@ -116,8 +116,8 @@ def input_printer_data(storage: Storage) -> tuple[Printer, Location]:
 
     os.system("cls")
 
-    location = storage.get_location_by_id(
-        get_location_id_input(storage.get_locations())
+    location = storage.get_location_by_index(
+        get_location_index_input(storage.get_locations())
     )
     new_printer = printer_base_data.copy()
 
@@ -136,10 +136,10 @@ def input_printer_data(storage: Storage) -> tuple[Printer, Location]:
 
 
 def select_printer_data(storage: Storage) -> tuple[Printer, Location]:
-    location_id = get_location_id_input(storage.get_locations())
-    location = storage.get_location_by_id(location_id)
+    location_idx = get_location_index_input(storage.get_locations())
+    location = storage.get_location_by_index(location_idx)
 
-    printer_id = get_printer_id_input(location)
+    printer_id = get_printer_index_input(location)
     printer = location.get_printer_by_id(printer_id)
 
     return printer, location

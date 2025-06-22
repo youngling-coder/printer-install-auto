@@ -5,7 +5,7 @@ actions = [
     "Add a printer with name, IP, and driver",
     "Remove a printer by place and IP",
     "Install a printer",
-    "Add a location",
+    "Create a location",
     "Remove a location",
     "Restore last state",
 ]
@@ -37,13 +37,13 @@ def prettified_printer_output(idx: int, printer) -> str:
 
 def prettified_location_output(idx: int, location) -> str:
 
-    return f"{Style.BRIGHT}{idx+1}  ::  {location.capitalize()}{Style.RESET_ALL}"
+    return f"{Style.BRIGHT}{idx+1}  ::  {location.name}{Style.RESET_ALL}"
 
 
 def prettified_locations_output(locations: list) -> str:
 
     locations = [
-        prettified_location_output(idx, location.name)
+        prettified_location_output(idx, location)
         for idx, location in enumerate(locations)
     ]
 
