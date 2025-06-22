@@ -201,8 +201,8 @@ class Location:
         self.name = name
         self.__printers: list["Printer"] = []
 
-    def get_printer_by_id(self, printer_id: int) -> "Printer":
-        return self.__printers[printer_id]
+    def get_printer_by_idndex(self, printer_idx: int) -> "Printer":
+        return self.__printers[printer_idx]
 
     def get_printers(self, as_dicts: bool = False) -> list["Printer"]:
 

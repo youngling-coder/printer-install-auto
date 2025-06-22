@@ -139,7 +139,7 @@ def select_printer_data(storage: Storage) -> tuple[Printer, Location]:
     location_idx = get_location_index_input(storage.get_locations())
     location = storage.get_location_by_index(location_idx)
 
-    printer_id = get_printer_index_input(location)
-    printer = location.get_printer_by_id(printer_id)
+    printer_idx = get_printer_index_input(location)
+    printer = location.get_printer_by_idndex(printer_idx)
 
     return printer, location
