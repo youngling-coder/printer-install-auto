@@ -15,12 +15,12 @@ from storage import Storage
 # TODO: Maybe export as HTML for better overview
 # TODO: GUI - ???
 
+
 def main():
 
     while True:
         storage = Storage()
         storage.load_from_json()
-        locations = storage.get_locations()
 
         os.system("cls")
         print(
@@ -40,12 +40,7 @@ def main():
                 storage.remove_printer_from_location(printer, location)
 
             case 3:
-
-                location_id = get_location_id_input(locations)
-                location = storage.get_location_by_id(location_id)
-
-                printer_id = get_printer_id_input(location)
-                printer = location.get_printer_by_id(printer_id)
+                printer, location = select_printer_data(storage)
 
                 install_printer(
                     printer.ip,
@@ -54,8 +49,11 @@ def main():
                     printer.driver_name,
                 )
 
+            case 6:
+                storage.restore_from_backup()
+
         input(
-            f"\n{Style.BRIGHT + Fore.CYAN}Press any key to continue...\n{Style.RESET_ALL}"
+            f"\n{Style.BRIGHT + Fore.CYAN}Press ENTER to continue...\n{Style.RESET_ALL}"
         )
 
 
