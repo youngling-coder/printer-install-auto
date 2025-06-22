@@ -123,6 +123,8 @@ class Storage:
 
     def load_from_json(self):
 
+        self.__locations = []
+
         printers_locations_json = self.__read_json()
 
         for location_name in printers_locations_json.keys():
@@ -136,6 +138,13 @@ class Storage:
     def __backup_current_state(self, path: str = "printers.json"):
         backup_path = path + ".bak"
         shutil.copy2(path, backup_path)
+
+    def restore_from_backup(self):
+        os.remove("printers.json")
+
+        os.rename("printers.json.bak", "printers.json")
+
+        self.load_from_json()
 
     def write_dict_as_json(self, path: str = "printers.json"):
 
