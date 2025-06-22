@@ -1,12 +1,22 @@
 from typing import Optional
 from colorama import Style, Fore
 from utils import help_
-from utils import prettified_locations_output, prettified_printer_output
+from utils import (
+    prettified_locations_output,
+    prettified_printer_output,
+    total_actions_count,
+)
 import sys, os
 from storage import Storage, Printer, Location
 
 
-printer_base_data = {"ip": "", "name": "", "driver_inf_path": "", "model": "", "driver": ""}
+printer_base_data = {
+    "ip": "",
+    "name": "",
+    "driver_inf_path": "",
+    "model": "",
+    "driver": "",
+}
 
 
 def get_generic_input(prompt: str, empty: bool = True) -> str:
@@ -63,11 +73,9 @@ def get_integer_input(prompt: str, range_: Optional[range] = None):
 
         except ValueError:
             print(f"{Style.BRIGHT + Fore.RED}Incompatible value!{Style.RESET_ALL}")
-            continue
 
         except IndexError as e:
             print(e)
-            continue
 
 
 def get_printer_id_input(location: Location):
@@ -98,7 +106,7 @@ def get_current_action():
     help_()
 
     current_action = get_integer_input(
-        "Enter action you want to perform: ", range_=range(1, 4)
+        "Enter action you want to perform: ", range_=range(1, total_actions_count + 1)
     )
 
     return current_action
