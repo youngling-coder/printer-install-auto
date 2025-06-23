@@ -7,8 +7,8 @@ from custom_inputs import (
     get_location_index_input,
     get_generic_input,
 )
-from actions import install_printer
 from storage import Storage
+from installer import Installer
 
 # TODO: Maybe export as HTML for better overview
 # TODO: GUI - ???
@@ -40,7 +40,8 @@ def main():
 
             case 3:
                 printer, _ = select_printer_data(storage)
-                install_printer(printer)
+                installer = Installer(printer)
+                installer.run()
 
             case 4:
                 location_name = get_generic_input(
