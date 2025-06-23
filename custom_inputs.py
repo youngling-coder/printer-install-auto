@@ -7,7 +7,7 @@ from utils import (
     total_actions_count,
 )
 import sys, os
-from storage import Storage, Printer, Location
+from models import Printer, Location
 
 
 printer_base_data = {
@@ -41,7 +41,7 @@ def get_yn_confirmation(prompt: str) -> bool:
     return confirmation.lower().startswith("y") or confirmation == ""
 
 
-def get_ip_input(storage: Storage) -> str:
+def get_ip_input(storage) -> str:
 
     while True:
 
@@ -50,7 +50,7 @@ def get_ip_input(storage: Storage) -> str:
 
             if not storage.is_ip_valid(value):
                 raise ValueError(
-                    f"{Style.BRIGHT + Fore.RED}Entered IP is invalid!{Style.RESET_ALL}"
+                    f"{Style.BRIGHT + Fore.RED}Entered IP is invalid!\n{Style.RESET_ALL}"
                 )
 
             return value
@@ -67,13 +67,13 @@ def get_integer_input(prompt: str, range_: Optional[range] = None):
 
             if range_ and (value not in range_):
                 raise IndexError(
-                    f"{Style.BRIGHT + Fore.RED}Value is out of range!{Style.RESET_ALL}"
+                    f"{Style.BRIGHT + Fore.RED}Value is out of range!\n{Style.RESET_ALL}"
                 )
 
             return value
 
         except ValueError:
-            print(f"{Style.BRIGHT + Fore.RED}Incompatible value!{Style.RESET_ALL}")
+            print(f"{Style.BRIGHT + Fore.RED}Incompatible value!\n{Style.RESET_ALL}")
 
         except IndexError as e:
             print(e)
@@ -111,7 +111,7 @@ def get_current_action():
     return current_action
 
 
-def input_printer_data(storage: Storage) -> tuple[Printer, Location]:
+def input_printer_data(storage) -> tuple[Printer, Location]:
 
     location = storage.get_location_by_index(
         get_location_index_input(storage.get_locations())
@@ -132,7 +132,7 @@ def input_printer_data(storage: Storage) -> tuple[Printer, Location]:
     return printer, location
 
 
-def select_printer_data(storage: Storage) -> tuple[Printer, Location]:
+def select_printer_data(storage) -> tuple[Printer, Location]:
     location_idx = get_location_index_input(storage.get_locations())
     location = storage.get_location_by_index(location_idx)
 

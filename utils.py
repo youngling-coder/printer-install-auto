@@ -14,6 +14,10 @@ total_actions_count = len(actions)
 
 
 def help_():
+
+    print(
+        f"{Style.BRIGHT}{Fore.GREEN}🌐 Web Overview: {Fore.CYAN}http://localhost:8765/{Style.RESET_ALL}\n"
+    )
     print(f"{Fore.CYAN + Style.BRIGHT}Commands: {Style.RESET_ALL}\n")
 
     for idx, action in enumerate(actions):

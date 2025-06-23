@@ -1,4 +1,6 @@
 import os
+import logging
+import threading
 from colorama import Style, Fore
 from custom_inputs import (
     get_current_action,
@@ -9,12 +11,22 @@ from custom_inputs import (
 )
 from storage import Storage
 from installer import Installer
+import web_ui
 
-# TODO: Maybe export as HTML for better overview
-# TODO: GUI - ???
+
+def run_web_ui():
+    # Suppress Flask output
+    log = logging.getLogger("werkzeug")
+    log.setLevel(logging.ERROR)
+
+    web_ui.app.logger.disabled = True
+
+    web_ui.app.run(port=8765, use_reloader=False, debug=False)
 
 
 def main():
+
+    threading.Thread(target=run_web_ui, daemon=True).start()
 
     while True:
         storage = Storage()
@@ -44,7 +56,7 @@ def main():
                 location_name = get_generic_input(
                     "Enter new location's name: ", empty=False
                 )
-                storage.add_location(location_name)
+                storage.create_location(location_name, confirm=True)
 
             case 5:
                 location_idx = get_location_index_input(storage.get_locations())
@@ -58,4 +70,5 @@ def main():
         )
 
 
-main()
+if __name__ == "__main__":
+    main()
