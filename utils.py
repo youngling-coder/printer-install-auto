@@ -9,6 +9,7 @@ actions = [
     "Create a location",
     "Remove a location",
     "Restore from backup",
+    "Create backup",
 ]
 
 total_actions_count = len(actions)

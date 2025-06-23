@@ -74,6 +74,9 @@ def main():
             case 7:
                 storage.restore_from_backup()
 
+            case 8:
+                storage.create_backup(manual=True)
+
         input(
             f"{Style.BRIGHT + Fore.CYAN}Press ENTER to continue...\n{Style.RESET_ALL}"
         )

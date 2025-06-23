@@ -7,11 +7,13 @@ import shutil
 from colorama import Style, Fore
 
 from models import Printer, Location
-from custom_inputs import get_yn_confirmation
+from custom_inputs import get_yn_confirmation, get_generic_input
 
 
 class Storage:
     def __init__(self):
+        self.__filename: str = "printers.json"
+        self.__backup_file: str = f"{self.__filename}.bak"
         self.__locations: list[Location] = []
 
     def add_printer_to_location(self, printer: Printer, location: Location) -> None:
@@ -26,11 +28,12 @@ class Storage:
 
         if action_confirmed:
             location.add_printer(printer)
-            self.write_dict_as_json()
 
             print(
                 f"{Style.BRIGHT + Fore.GREEN}✅ Printer added successfully!{Style.RESET_ALL}\n"
             )
+
+            self.write_dict_as_json()
 
     def create_location(
         self,
@@ -79,10 +82,10 @@ class Storage:
 
                 if action_confirmed:
                     self.__locations.remove(location)
-                    self.write_dict_as_json()
                     print(
                         f"{Style.BRIGHT + Fore.GREEN}✅ '{location.name}' location is removed!\n{Style.RESET_ALL}"
                     )
+                    self.write_dict_as_json()
 
             except ValueError as e:
                 print(
@@ -108,10 +111,11 @@ class Storage:
                 if location_printers[idx].ip == printer.ip:
                     location.get_printers().pop(idx)
 
-            self.write_dict_as_json()
             print(
                 f"{Style.BRIGHT + Fore.GREEN}✅ Printer removed successfully!\n{Style.RESET_ALL}"
             )
+
+            self.write_dict_as_json()
 
     def get_location_by_index(self, location_idx: int) -> Location:
         return self.__locations[location_idx]
@@ -159,7 +163,7 @@ class Storage:
 
         return printers
 
-    def __read_json(self, path: str = "printers.json") -> dict:
+    def __read_json(self, path: str) -> dict:
 
         if not os.path.exists(path):
             raise FileNotFoundError(
@@ -177,7 +181,7 @@ class Storage:
 
         self.__locations = []
 
-        printers_locations_json = self.__read_json()
+        printers_locations_json = self.__read_json(self.__filename)
 
         for location_name in printers_locations_json.keys():
 
@@ -188,22 +192,74 @@ class Storage:
 
                 location.add_printer(new_printer)
 
-    def __backup_current_state(self, path: str = "printers.json"):
-        backup_path = path + ".bak"
-        shutil.copy2(path, backup_path)
+    def create_backup(self, manual: bool = False):
+
+        backup_path = None
+
+        if manual:
+            backup_path = get_generic_input(
+                f"{Style.BRIGHT + Fore.CYAN}[Optional]{Style.RESET_ALL} Enter path or filename: "
+            )
+
+            if os.path.exists(backup_path):
+
+                action_confirmed = get_yn_confirmation(
+                    f"{Style.BRIGHT + Fore.YELLOW}File already exists! Proceed? [Y/n]: "
+                )
+
+                if not action_confirmed:
+
+                    print(
+                        f"{Style.BRIGHT + Fore.YELLOW}⚠️  Backup creation canceled!\n{Style.RESET_ALL}"
+                    )
+                    return
+
+        if not backup_path:
+            backup_path = self.__backup_file
+
+        if os.path.isdir(backup_path):
+            backup_path = os.path.join(backup_path, self.__backup_file)
+
+        shutil.copy2(self.__filename, backup_path)
+
+        print(
+            f"{Style.BRIGHT + Fore.GREEN}✅ {"[Auto]" if not manual else ""}{Fore.RESET} Backup created successfully!\n{Style.RESET_ALL}"
+        )
 
     def restore_from_backup(self):
 
-        os.remove("printers.json")
-        os.rename("printers.json.bak", "printers.json")
+        backup_path = get_generic_input(
+            f"{Style.BRIGHT + Fore.CYAN}[Optional]{Style.RESET_ALL} Enter path or filename: "
+        )
 
-        self.load_from_json()
+        if not backup_path:
+            backup_path = self.__backup_file
 
-    def write_dict_as_json(self, path: str = "printers.json"):
+        action_confirmed = get_yn_confirmation(
+            f"{Style.BRIGHT + Fore.YELLOW}⚠️  Current storage file will be overwritten!{Fore.RESET} Proceed? [Y/n]:{Style.RESET_ALL} "
+        )
+
+        if action_confirmed:
+
+            shutil.copy2(backup_path, self.__filename)
+            self.load_from_json()
+            print(
+                f"{Style.BRIGHT + Fore.GREEN}✅ Successfully restored from backup!\n{Style.RESET_ALL}"
+            )
+
+            return
+
+        print(
+            f"{Style.BRIGHT + Fore.YELLOW}⚠️  Backup restoration canceled!\n{Style.RESET_ALL}"
+        )
+
+    def write_dict_as_json(self, path: str = ""):
+
+        file = os.path.join(path, self.__filename)
 
         data = self.to_dict()
 
-        self.__backup_current_state()
+        self.create_backup()
 
-        with open(path, "w") as drucker_file:
+        with open(file, "w") as drucker_file:
             json.dump(data, drucker_file, indent=4)
