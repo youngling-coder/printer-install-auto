@@ -3,6 +3,8 @@ import json
 import re
 from typing import Optional
 import shutil
+import platform
+import subprocess
 
 from colorama import Style, Fore
 
@@ -241,6 +243,19 @@ class Printer:
         self.driver_name = driver_name
         self.model = model
 
+    def is_available(self, timeout: int = 5) -> bool:
+            """Check if the printer is reachable over the network via ping."""
+            param = "-n" if platform.system().lower() == "windows" else "-c"
+            try:
+                result = subprocess.run(
+                    ["ping", param, "1", "-w", str(timeout), self.ip],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+                return result.returncode == 0
+            except Exception:
+                return False
+        
     def to_dict(self) -> dict:
         return self.__dict__
 

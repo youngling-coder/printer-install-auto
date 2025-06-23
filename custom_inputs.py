@@ -92,7 +92,6 @@ def get_printer_index_input(location: Location):
 
 def get_location_index_input(locations: Location) -> int:
 
-    print()
     print(prettified_locations_output(locations))
 
     location_id = get_integer_input(
@@ -113,8 +112,6 @@ def get_current_action():
 
 
 def input_printer_data(storage: Storage) -> tuple[Printer, Location]:
-
-    os.system("cls")
 
     location = storage.get_location_by_index(
         get_location_index_input(storage.get_locations())

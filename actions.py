@@ -1,4 +1,5 @@
 import subprocess
+from colorama import Fore, Style
 from custom_inputs import get_yn_confirmation
 
 
@@ -13,9 +14,15 @@ def run_command(command):
 
 def install_printer(printer, port_name=None):
 
-    proceed_installation = get_yn_confirmation("Procceed with installation? [Y/n]: ")
+    action_confirmed = get_yn_confirmation("Procceed with installation? [Y/n]: ")
 
-    if proceed_installation:
+    is_printer_available = printer.is_available()
+
+    if not is_printer_available:
+        print(f"{Style.BRIGHT + Fore.RED}❌ Printer is unavailable!")
+        return
+
+    if action_confirmed:
         if not port_name:
             port_name = f"IP_{printer.ip}"
 
