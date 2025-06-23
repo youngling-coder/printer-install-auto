@@ -21,7 +21,7 @@ class Storage:
         print()
         print(prettified_printer_output(0, printer))
         print(
-            f'{Style.BRIGHT}Will be added to "{Fore.CYAN + location.name + Fore.RESET}"'
+            f'{Style.BRIGHT}Will be added to "{Fore.CYAN + location.name + Fore.RESET}\n"'
         )
 
         action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
@@ -31,21 +31,21 @@ class Storage:
             self.write_dict_as_json()
 
             print(
-                f"{Style.BRIGHT + Fore.GREEN}\n✅ Printer added successfully!{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.GREEN}✅ Printer added successfully!{Style.RESET_ALL}\n"
             )
 
     def add_location(self, location_name, save: bool = True) -> "Location":
 
         if self.get_location_by_name(location_name):
             print(
-                f"{Style.BRIGHT + Fore.YELLOW}\n⚠️  Location already exists!{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location_name}' already exists!{Style.RESET_ALL}\n"
             )
 
         else:
 
             self.__locations.append(Location(location_name))
             print(
-                f"{Style.BRIGHT + Fore.GREEN}\n✅ Location is created!{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.GREEN}✅ Location is created!{Style.RESET_ALL}\n"
             )
 
             if save:
@@ -59,7 +59,7 @@ class Storage:
 
         if location and location.get_printers():
             print(
-                f"{Style.BRIGHT + Fore.YELLOW}\n⚠️  '{location.name}' location contain printers!{Style.RESET_ALL} Delete all the printers from this location first!"
+                f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location.name}' contain printers!{Fore.RESET} Delete all the printers from this location first!{Style.RESET_ALL}\n"
             )
 
         else:
@@ -70,12 +70,12 @@ class Storage:
                     self.__locations.remove(location)
                     self.write_dict_as_json()
                     print(
-                        f"{Style.BRIGHT + Fore.GREEN}\n✅ '{location.name}' location is removed!{Style.RESET_ALL}"
+                        f"{Style.BRIGHT + Fore.GREEN}✅ '{location.name}' location is removed!\n{Style.RESET_ALL}"
                     )
 
             except ValueError as e:
                 print(
-                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Skipping '{location.name}' as it is not present in the list!{Style.RESET_ALL}"
+                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Skipping '{location.name}' as it is not present in the list!\n{Style.RESET_ALL}"
                 )
 
     def remove_printer_from_location(
@@ -99,7 +99,7 @@ class Storage:
 
             self.write_dict_as_json()
             print(
-                f"{Style.BRIGHT + Fore.GREEN}\n✅ Printer removed successfully!{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.GREEN}✅ Printer removed successfully!\n{Style.RESET_ALL}"
             )
 
     def get_location_by_index(self, location_idx: int) -> "Location":
@@ -152,7 +152,7 @@ class Storage:
 
         if not os.path.exists(path):
             raise FileNotFoundError(
-                f"{Style.BRIGHT + Fore.RED}JSON file not found!{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.RED}JSON file not found!\n{Style.RESET_ALL}"
             )
 
         druckers = {}
@@ -182,8 +182,8 @@ class Storage:
         shutil.copy2(path, backup_path)
 
     def restore_from_backup(self):
-        os.remove("printers.json")
 
+        os.remove("printers.json")
         os.rename("printers.json.bak", "printers.json")
 
         self.load_from_json()
@@ -244,18 +244,19 @@ class Printer:
         self.model = model
 
     def is_available(self, timeout: int = 5) -> bool:
-            """Check if the printer is reachable over the network via ping."""
-            param = "-n" if platform.system().lower() == "windows" else "-c"
-            try:
-                result = subprocess.run(
-                    ["ping", param, "1", "-w", str(timeout), self.ip],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                )
-                return result.returncode == 0
-            except Exception:
-                return False
-        
+
+        param = "-n" if platform.system().lower() == "windows" else "-c"
+
+        try:
+            result = subprocess.run(
+                ["ping", param, "1", "-w", str(timeout), self.ip],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            return result.returncode == 0
+        except Exception:
+            return False
+
     def to_dict(self) -> dict:
         return self.__dict__
 

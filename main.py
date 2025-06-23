@@ -21,6 +21,7 @@ def main():
         storage.load_from_json()
 
         os.system("cls")
+
         print(
             f'Type {Style.BRIGHT}"exit"{Style.RESET_ALL} to quit the program, ', end=""
         )

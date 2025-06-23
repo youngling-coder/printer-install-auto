@@ -7,7 +7,7 @@ actions = [
     "Install a printer",
     "Create a location",
     "Remove a location",
-    "Restore last state",
+    "Restore from backup",
 ]
 
 total_actions_count = len(actions)
