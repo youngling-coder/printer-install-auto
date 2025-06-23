@@ -17,10 +17,28 @@ HTML_TEMPLATE = """
         table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <h1>Printer Overview</h1>
+        <form method="get" action="/">
+        <button type="submit">Reload</button>
+    </form>
     {% for location in locations %}
         <h2>{{ location.name }}</h2>
         <table>
