@@ -22,10 +22,7 @@ def main():
 
         os.system("cls")
 
-        print(
-            f'Type {Style.BRIGHT}"exit"{Style.RESET_ALL} to quit the program, ', end=""
-        )
-        print(f'{Style.BRIGHT}"help_"{Style.RESET_ALL} to show help.\n')
+        print(f'Type {Style.BRIGHT}"exit"{Style.RESET_ALL} to quit the program\n')
 
         current_action = get_current_action()
 
