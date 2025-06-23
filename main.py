@@ -39,30 +39,39 @@ def main():
         current_action = get_current_action()
 
         match current_action:
+
             case 1:
+                for l_idx, location in enumerate(storage.get_locations()):
+                    print(location.to_str(l_idx))
+                    print()
+
+                    for p_idx, printer in enumerate(location.get_printers()):
+                        print(printer.to_str(p_idx, tab_level=1))
+
+            case 2:
                 printer, location = input_printer_data(storage)
                 storage.add_printer_to_location(printer, location)
 
-            case 2:
+            case 3:
                 printer, location = select_printer_data(storage)
                 storage.remove_printer_from_location(printer, location)
 
-            case 3:
+            case 4:
                 printer, _ = select_printer_data(storage)
                 installer = Installer(printer)
                 installer.run()
 
-            case 4:
+            case 5:
                 location_name = get_generic_input(
                     "Enter new location's name: ", empty=False
                 )
                 storage.create_location(location_name, confirm=True)
 
-            case 5:
+            case 6:
                 location_idx = get_location_index_input(storage.get_locations())
                 storage.remove_location(location_idx)
 
-            case 6:
+            case 7:
                 storage.restore_from_backup()
 
         input(

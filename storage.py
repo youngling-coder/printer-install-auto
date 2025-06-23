@@ -7,7 +7,6 @@ import shutil
 from colorama import Style, Fore
 
 from models import Printer, Location
-from utils import prettified_printer_output
 from custom_inputs import get_yn_confirmation
 
 
@@ -18,7 +17,7 @@ class Storage:
     def add_printer_to_location(self, printer: Printer, location: Location) -> None:
 
         print()
-        print(prettified_printer_output(0, printer))
+        print(printer.to_str(0))
         print(
             f'{Style.BRIGHT}Will be added to "{Fore.CYAN + location.name + Fore.RESET}"\n'
         )
@@ -97,7 +96,7 @@ class Storage:
         print(
             f"{Fore.YELLOW + Style.BRIGHT}⚠️  All the info about this printer will be removed!\n"
         )
-        print(prettified_printer_output(0, printer))
+        print(printer.to_str(0))
 
         action_confirmed = get_yn_confirmation("Proceed? [Y/n]: ")
 

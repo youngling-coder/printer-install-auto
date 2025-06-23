@@ -2,6 +2,7 @@ from colorama import Style, Fore
 
 
 actions = [
+    "Printer overview",
     "Add a printer with name, IP, and driver",
     "Remove a printer by place and IP",
     "Install a printer",
@@ -26,29 +27,8 @@ def help_():
     print()
 
 
-def prettified_printer_output(idx: int, printer) -> str:
-
-    output = (
-        f"{idx+1}. {Style.BRIGHT + Fore.CYAN}{printer.name}\n"
-        f"  {Fore.YELLOW}Model  : {Fore.RESET}{printer.model}\n"
-        f"  {Fore.YELLOW}IP     : {Fore.RESET}{printer.ip}\n"
-        f"  {Fore.YELLOW}Driver name : {Fore.RESET}{printer.driver_name or '—'}\n"
-        f"  {Fore.YELLOW}Driver .inf path : {Fore.RESET}{printer.driver_inf_path or '—'}\n"
-    )
-
-    return output
-
-
-def prettified_location_output(idx: int, location) -> str:
-
-    return f"{Style.BRIGHT}{idx+1}  ::  {location.name}{Style.RESET_ALL}"
-
-
 def prettified_locations_output(locations: list) -> str:
 
-    locations = [
-        prettified_location_output(idx, location)
-        for idx, location in enumerate(locations)
-    ]
+    locations = [location.to_str(idx) for idx, location in enumerate(locations)]
 
     return f"{"\n".join(locations)}\n"

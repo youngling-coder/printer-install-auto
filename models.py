@@ -1,5 +1,6 @@
 import platform
 import subprocess
+from colorama import Fore, Style
 
 
 class Location:
@@ -35,6 +36,9 @@ class Location:
 
         if self.__is_printer_unique(printer):
             self.__printers.append(printer)
+
+    def to_str(self, idx: int) -> str:
+        return f"{Style.BRIGHT}{idx+1}. {self.name}{Style.RESET_ALL}"
 
 
 class Printer:
@@ -73,3 +77,15 @@ class Printer:
             driver_name=data["driver_name"],
             model=data["model"],
         )
+
+    def to_str(self, idx: int, tab_level: int = 0) -> str:
+
+        output = (
+            f"{"  " * tab_level}{idx+1}. {Style.BRIGHT + Fore.CYAN}{self.name}\n"
+            f"  {"  " * tab_level}{Fore.YELLOW}Model  : {Fore.RESET}{self.model}\n"
+            f"  {"  " * tab_level}{Fore.YELLOW}IP     : {Fore.RESET}{self.ip}\n"
+            f"  {"  " * tab_level}{Fore.YELLOW}Driver name : {Fore.RESET}{self.driver_name or '—'}\n"
+            f"  {"  " * tab_level}{Fore.YELLOW}Driver .inf path : {Fore.RESET}{self.driver_inf_path or '—'}\n"
+        )
+
+        return output

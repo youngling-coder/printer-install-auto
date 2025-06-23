@@ -3,7 +3,6 @@ from colorama import Style, Fore
 from utils import help_
 from utils import (
     prettified_locations_output,
-    prettified_printer_output,
     total_actions_count,
 )
 import sys, os
@@ -81,7 +80,7 @@ def get_integer_input(prompt: str, range_: Optional[range] = None):
 
 def get_printer_index_input(location: Location):
     for idx, printer in enumerate(location.get_printers()):
-        print(prettified_printer_output(idx, printer))
+        print(printer.to_str(idx))
 
     printer_id = get_integer_input(
         f"Select printer: ", range_=range(1, len(location.get_printers()) + 1)
