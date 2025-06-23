@@ -1,5 +1,4 @@
-import platform
-import subprocess
+import socket
 from colorama import Fore, Style
 
 
@@ -51,18 +50,11 @@ class Printer:
         self.driver_name = driver_name
         self.model = model
 
-    def is_available(self, timeout: int = 5) -> bool:
-
-        param = "-n" if platform.system().lower() == "windows" else "-c"
-
+    def is_available(self, port: int = 80, timeout: float = 1.0) -> bool:
         try:
-            result = subprocess.run(
-                ["ping", param, "1", "-w", str(timeout), self.ip],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-            return result.returncode == 0
-        except Exception:
+            with socket.create_connection((self.ip, port), timeout=timeout):
+                return True
+        except (socket.timeout, ConnectionRefusedError, OSError):
             return False
 
     def to_dict(self) -> dict:
