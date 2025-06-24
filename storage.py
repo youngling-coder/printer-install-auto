@@ -43,7 +43,7 @@ class Storage:
         confirm: bool = False,
     ) -> Location:
 
-        if self.get_location_by_name(location_name):
+        if self.get_location_by_name(location_name)[1]:
             if output:
                 print(
                     f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location_name}' already exists!{Style.RESET_ALL}\n"
@@ -59,7 +59,7 @@ class Storage:
                 self.__locations.append(Location(location_name))
                 if output:
                     print(
-                        f"{Style.BRIGHT + Fore.GREEN}✅ Location is created!{Style.RESET_ALL}\n"
+                        f"{Style.BRIGHT + Fore.GREEN}✅ Location '{location_name}' is created!{Style.RESET_ALL}\n"
                     )
 
                 if save:
@@ -117,12 +117,20 @@ class Storage:
 
             self.write_dict_as_json()
 
+
+    def get_printer_by_ip(self, ip: str) -> Printer:
+
+        for printer in self.get_printers():
+            if printer.ip == ip:
+                return printer
+            
+        return
+
     def get_location_by_index(self, location_idx: int) -> Location:
         return self.__locations[location_idx]
 
     def is_ip_unique(self, ip):
         for printer in self.get_printers():
-
             if printer.ip == ip:
                 return False
 
@@ -134,13 +142,13 @@ class Storage:
 
         return bool(ip_regex.match(ip) and self.is_ip_unique(ip))
 
-    def get_location_by_name(self, name: str) -> Optional[Location]:
-        for location in self.__locations:
+    def get_location_by_name(self, name: str) -> tuple[int, Location]:
+        for idx, location in enumerate(self.__locations):
 
             if location.name == name:
-                return location
+                return idx, location
 
-        return
+        return None, None
 
     def to_dict(self) -> dict:
 
@@ -192,9 +200,7 @@ class Storage:
 
                 location.add_printer(new_printer)
 
-    def create_backup(self, manual: bool = False):
-
-        backup_path = None
+    def create_backup(self, manual: bool = False, backup_path: str = None):
 
         if manual:
             backup_path = get_generic_input(

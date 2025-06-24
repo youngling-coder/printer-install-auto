@@ -1,0 +1,37 @@
+import argparse
+
+
+def build_arg_parser():
+    parser = argparse.ArgumentParser(description="Printer Management CLI")
+    subparsers = parser.add_subparsers(dest="action", help="Actions")
+    subparsers.required = True
+
+    subparsers.add_parser("overview", help="Show printer overview")
+
+    add = subparsers.add_parser("add", help="Add a printer")
+    add.add_argument("location_name")
+    add.add_argument("ip")
+    add.add_argument("name")
+    add.add_argument("model")
+    add.add_argument("driver_name")
+    add.add_argument("driver_inf_path")
+
+    rem = subparsers.add_parser("remove", help="Remove a printer")
+    
+    rem.add_argument("ip")
+    rem.add_argument("location_name")
+
+    install = subparsers.add_parser("install", help="Install a printer")
+    install.add_argument("ip")
+
+    create_loc = subparsers.add_parser("create-location", help="Create a new location")
+    create_loc.add_argument("location_name")
+
+    remove_loc = subparsers.add_parser("remove-location", help="Remove a location")
+    remove_loc.add_argument("location_name")
+
+    subparsers.add_parser("restore", help="Restore from backup")
+
+    subparsers.add_parser("backup", help="Create backup")
+
+    return parser

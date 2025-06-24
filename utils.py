@@ -28,6 +28,14 @@ def help_():
     print()
 
 
+def show_overview_of_storage(storage):
+    for l_idx, location in enumerate(storage.get_locations()):
+        print(location.to_str(l_idx))
+        print()
+        for p_idx, printer in enumerate(location.get_printers()):
+            print(printer.to_str(p_idx, tab_level=1))
+
+
 def prettified_locations_output(locations: list) -> str:
 
     locations = [location.to_str(idx) for idx, location in enumerate(locations)]
