@@ -17,7 +17,7 @@ def build_arg_parser():
     add.add_argument("driver_inf_path")
 
     rem = subparsers.add_parser("remove", help="Remove a printer")
-    
+
     rem.add_argument("ip")
     rem.add_argument("location_name")
 

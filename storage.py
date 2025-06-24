@@ -1,7 +1,6 @@
 import os
 import json
 import re
-from typing import Optional
 import shutil
 
 from colorama import Style, Fore
@@ -117,13 +116,12 @@ class Storage:
 
             self.write_dict_as_json()
 
-
     def get_printer_by_ip(self, ip: str) -> Printer:
 
         for printer in self.get_printers():
             if printer.ip == ip:
                 return printer
-            
+
         return
 
     def get_location_by_index(self, location_idx: int) -> Location:

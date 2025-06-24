@@ -57,7 +57,9 @@ def cli_main(args):
             _, location = storage.get_location_by_name(args.location_name)
 
             if not location:
-                print(f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}")
+                print(
+                    f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}"
+                )
                 return
 
             storage.add_printer_to_location(printer, location)
@@ -67,22 +69,28 @@ def cli_main(args):
             printer = storage.get_printer_by_ip(args.ip)
 
             if not printer:
-                print(f"{Style.BRIGHT + Fore.RED}❌ Printer not found! {Style.RESET_ALL}")
+                print(
+                    f"{Style.BRIGHT + Fore.RED}❌ Printer not found! {Style.RESET_ALL}"
+                )
                 return
-            
+
             _, location = storage.get_location_by_name(args.location_name)
 
             if not location:
-                print(f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}")
+                print(
+                    f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}"
+                )
                 return
-            
+
             storage.remove_printer_from_location(printer, location)
 
         case "install":
             printer = storage.get_printer_by_ip(args.ip)
 
             if not printer:
-                print(f"{Style.BRIGHT + Fore.RED}❌ Printer not found! {Style.RESET_ALL}")
+                print(
+                    f"{Style.BRIGHT + Fore.RED}❌ Printer not found! {Style.RESET_ALL}"
+                )
                 return
 
             installer = Installer(printer)
@@ -93,11 +101,13 @@ def cli_main(args):
 
         case "remove-location":
             location_idx, _ = storage.get_location_by_name(args.location_name)
-            
+
             if not location_idx:
-                print(f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}")
+                print(
+                    f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}"
+                )
                 return
-            
+
             storage.remove_location(location_idx)
 
         case "restore":
@@ -134,7 +144,9 @@ def interactive_main():
                 installer = Installer(printer)
                 installer.run()
             case 5:
-                location_name = get_generic_input("Enter new location's name: ", empty=False)
+                location_name = get_generic_input(
+                    "Enter new location's name: ", empty=False
+                )
                 storage.create_location(location_name, confirm=True)
             case 6:
                 location_idx = get_location_index_input(storage.get_locations())
@@ -144,7 +156,10 @@ def interactive_main():
             case 8:
                 storage.create_backup(manual=True)
 
-        input(f"{Style.BRIGHT + Fore.CYAN}Press ENTER to continue...\n{Style.RESET_ALL}")
+        input(
+            f"{Style.BRIGHT + Fore.CYAN}Press ENTER to continue...\n{Style.RESET_ALL}"
+        )
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
