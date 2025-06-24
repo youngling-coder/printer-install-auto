@@ -1,5 +1,5 @@
 from colorama import Style, Fore
-
+from prettytable import PrettyTable
 
 actions = [
     "Printer overview",
@@ -28,12 +28,52 @@ def help_():
     print()
 
 
+def show_overview_of_location(location):
+    printers = location.get_printers()
+
+    if not printers:
+        print(Fore.LIGHTBLACK_EX + "  (Keine Drucker vorhanden)\n" + Style.RESET_ALL)
+        return
+
+    table = PrettyTable()
+    table.field_names = ["#", "Name", "IP", "Modell", "Treiber", "Verfügbar"]
+
+    for p_idx, printer in enumerate(printers):
+        status = printer.is_available()
+
+        status_icon = (
+            Fore.GREEN + "✅ Ja" + Style.RESET_ALL
+            if status
+            else Fore.RED + "❌ Nein" + Style.RESET_ALL
+        )
+
+        table.add_row(
+            [
+                p_idx + 1,
+                printer.name,
+                printer.ip,
+                printer.model,
+                printer.driver_name,
+                status_icon,
+            ]
+        )
+
+    print(table)
+
+
 def show_overview_of_storage(storage):
-    for l_idx, location in enumerate(storage.get_locations()):
-        print(location.to_str(l_idx))
-        print()
-        for p_idx, printer in enumerate(location.get_printers()):
-            print(printer.to_str(p_idx, tab_level=1))
+    locations = storage.get_locations()
+
+    if not locations:
+        print(Fore.YELLOW + "Keine Standorte vorhanden." + Style.RESET_ALL)
+        return
+
+    for l_idx, location in enumerate(locations):
+        print(
+            f"{"\n" if l_idx else ""}{Style.BRIGHT}Standort {l_idx+1}: {location.name}{Style.RESET_ALL}"
+        )
+
+        show_overview_of_location(location)
 
 
 def prettified_locations_output(locations: list) -> str:

@@ -15,18 +15,8 @@ from custom_inputs import (
 )
 from storage import Storage
 from models import Printer, Location
-from utils import show_overview_of_storage
+from utils import show_overview_of_storage, show_overview_of_location
 from installer import Installer
-import web_ui
-
-
-def run_web_ui():
-    # Suppress Flask output
-    log = logging.getLogger("werkzeug")
-    log.setLevel(logging.ERROR)
-
-    web_ui.app.logger.disabled = True
-    web_ui.app.run(port=8765, use_reloader=False, debug=False)
 
 
 def cli_main(args):
@@ -45,6 +35,11 @@ def cli_main(args):
 
     match args.action:
         case "overview":
+            if args.location:
+                _, location = storage.get_location_by_name(args.location)
+                show_overview_of_location(location)
+                return
+
             show_overview_of_storage(storage)
 
         case "add":
@@ -118,7 +113,6 @@ def cli_main(args):
 
 
 def interactive_main():
-    threading.Thread(target=run_web_ui, daemon=True).start()
 
     while True:
         storage = Storage()
@@ -132,6 +126,15 @@ def interactive_main():
 
         match current_action:
             case 1:
+                location_name = get_generic_input(
+                    f"{Style.BRIGHT + Fore.CYAN}[Optional]{Style.RESET_ALL} Enter location name: "
+                )
+
+                if location_name:
+                    _, location = storage.get_location_by_name(args.location)
+                    show_overview_of_location(location)
+                    return
+
                 show_overview_of_storage(storage)
             case 2:
                 printer, location = input_printer_data(storage)

@@ -2,3 +2,4 @@ colorama
 black
 pyinstaller
 flask
+prettytable
