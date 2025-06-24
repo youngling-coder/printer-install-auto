@@ -1,106 +1,109 @@
+Hier ist deine aktualisierte **Dokumentation** für das Druckerverwaltungssystem — **komplett ohne Web-Oberfläche** und mit klarer Beschreibung der **CLI-Kommandos inklusive `overview`-Tabelle** via `prettytable` und `colorama`.
+
+---
 
 # 🖨️ Druckerverwaltungssystem – Dokumentation
 
 ## 📌 Einführung
 
-Dieses Python-basierte System dient zur Verwaltung von Druckern an verschiedenen Standorten. Es bietet:
+Dieses Python-basierte System dient zur Verwaltung von Druckern an verschiedenen Standorten über eine **Kommandozeilenoberfläche (CLI)**. Es unterstützt:
 
-* **Kommandozeilen-Interface (CLI)** zur Verwaltung
-* **Web-Oberfläche** zur Übersicht unter [http://localhost:8765](http://localhost:8765)
-* **Automatisierte Druckerinstallation**
-* **JSON-basierte Datenspeicherung und automatische Backups**
+* Druckerübersicht mit Status (verfügbar/nicht erreichbar)
+* Druckerinstallation inkl. Treiberanbindung
+* JSON-basierte Datenspeicherung
+* Automatische & manuelle Backups
 
+---
 
 ## ⚙️ Voraussetzungen
 
 * Python **3.10+**
-* Abhängigkeiten installieren via:
+* Abhängigkeiten installieren:
 
   ```bash
   pip install -r requirements.txt
   ```
+
+---
 
 ## 🧰 Hauptfunktionen
 
 ### 1. Standortverwaltung
 
 * 🏢 **Standort hinzufügen**
-  → Über `Create a location` im Hauptmenü
+  → per Befehl `create-location`
 
 * ❌ **Standort entfernen**
-  → Nur möglich, wenn der Standort **keine Drucker** enthält
-  → Über `Remove a location` im Hauptmenü
+  → nur möglich, wenn der Standort **leer** ist
+  → per Befehl `remove-location`
 
 ---
 
 ### 2. Druckerverwaltung
 
 * ➕ **Drucker hinzufügen**
-  → Erfordert: IP-Adresse, Name, Modell, Treibername & Pfad
+  → mit IP, Name, Modell, Treibername & Treiberpfad (`.inf`)
 
 * ➖ **Drucker entfernen**
-  → Über `Remove a printer by place and IP`
+  → über IP & Standortname
 
 ---
 
 ### 3. Druckerinstallation
 
-Führt folgende Schritte automatisch aus:
+Führt automatisch folgende Schritte aus:
 
-1. Erstellen des TCP/IP-Ports
-2. Treiberinstallation (.inf-Datei)
-3. Einrichtung im System
-
----
-
-### 4. Datenpersistenz
-
-* 💾 **Automatische Backups** bei jeder Änderung
-* 🔄 **Manuelle Wiederherstellung** über das Menü möglich
+1. TCP/IP-Port einrichten
+2. Treiber installieren
+3. Drucker anlegen
 
 ---
 
-### 5. Web-Oberfläche
+### 4. Backups & Wiederherstellung
 
-* Startet automatisch beim Programmstart
-* Darstellung je Standort:
-
-  * Drucker-IPs & Namen
-  * Treiberinformationen
-  * Verfügbarkeit (✅ verfügbar / ❌ offline via Ping)
-* Aufrufbar unter: [http://localhost:8765](http://localhost:8765)
+* 💾 Automatische Backups bei Änderungen
+* 🔄 Wiederherstellung via `restore`
+* 📦 Manuelle Sicherung mit `backup`
 
 ---
 
-## 🖥️ Bedienungshandbuch (CLI)
+## 🖥️ CLI-Bedienung
 
 ```bash
 python main.py <command> [Argumente]
 ```
 
-### 📜 Verfügbare Befehle
+---
+
+### 📜 Verfügbare Kommandos
 
 #### 1. `overview`
 
-Zeigt Übersicht aller Standorte und Drucker.
+Zeigt eine Tabelle aller Standorte & Drucker inkl. Verfügbarkeitsstatus (Ping).
 
 ```bash
 python main.py overview
+```
+
+Optional kannst du nur einen Standort anzeigen:
+
+```bash
+python main.py overview --location "Büro EG"
 ```
 
 ---
 
 #### 2. `add`
 
-Fügt einen neuen Drucker zu einem Standort hinzu.
+Fügt einen neuen Drucker hinzu.
 
 ```bash
-python main.py add <location_name> <ip> <name> <model> <driver_name> <driver_inf_path>
+python main.py add <location-name> <ip> <name> <model> <driver_name> <driver_inf_path>
 ```
 
 | Argument          | Beschreibung            |
 | ----------------- | ----------------------- |
-| `location_name`   | Name des Standorts      |
+| `location-name`   | Zielstandort            |
 | `ip`              | IP-Adresse des Druckers |
 | `name`            | Anzeigename             |
 | `model`           | Modellbezeichnung       |
@@ -111,17 +114,17 @@ python main.py add <location_name> <ip> <name> <model> <driver_name> <driver_inf
 
 #### 3. `remove`
 
-Entfernt einen Drucker anhand von IP und Standort.
+Entfernt einen Drucker anhand IP & Standort.
 
 ```bash
-python main.py remove <ip> <location_name>
+python main.py remove <ip> <location-name>
 ```
 
 ---
 
 #### 4. `install`
 
-Installiert einen Drucker anhand seiner IP-Adresse.
+Installiert einen Drucker anhand seiner IP.
 
 ```bash
 python main.py install <ip>
@@ -134,24 +137,24 @@ python main.py install <ip>
 Erstellt einen neuen Standort.
 
 ```bash
-python main.py create-location <location_name>
+python main.py create-location <location-name>
 ```
 
 ---
 
 #### 6. `remove-location`
 
-Entfernt einen bestehenden Standort (nur wenn leer).
+Löscht einen Standort (nur wenn leer).
 
 ```bash
-python main.py remove-location <location_name>
+python main.py remove-location <location-name>
 ```
 
 ---
 
 #### 7. `restore`
 
-Stellt den letzten Backup-Zustand wieder her.
+Stellt das letzte Backup wieder her.
 
 ```bash
 python main.py restore
@@ -169,40 +172,44 @@ python main.py backup
 
 ---
 
-## 🧭 Menüfunktionen im Interaktiven Modus
+## 📊 Übersichtstabelle (Beispiel: `overview`-Kommando)
 
-1. **Printer overview** – Zeigt alle Standorte & Drucker
-2. **Add a printer** – Drucker hinzufügen (alle Daten notwendig)
-3. **Remove a printer** – Drucker entfernen
-4. **Install a printer** – Installationsroutine starten
-5. **Create a location** – Neuen Standort anlegen
-6. **Remove a location** – Leeren Standort löschen
-7. **Restore from backup** – Backup wiederherstellen
-8. **Create backup** – Manuelles Backup erstellen
+Ausgabe mit `colorama` + `prettytable`:
 
----
+```
+Standort 1: Büro EG
 
-## ⌨️ Tastaturbefehle
-
-| Eingabe | Funktion                           |
-| ------- | ---------------------------------- |
-| `exit`  | Beendet das Programm               |
-| `ENTER` | Bestätigt Eingabe / Weiter         |
-| `Y/n`   | Ja-/Nein-Auswahl (Ja ist Standard) |
++---+-------------+-------------+--------------+---------------------+------------+
+| # | Name        | IP          | Modell       | Treiber             | Verfügbar  |
++---+-------------+-------------+--------------+---------------------+------------+
+| 1 | HP LaserJet | 10.0.0.5    | HP LJ P1102  | HPUniversalDriver   | ✅ Ja      |
+| 2 | Canon Pixma | 10.0.0.7    | Canon MX920  | CanonDriverX        | ❌ Nein    |
++---+-------------+-------------+--------------+---------------------+------------+
+```
 
 ---
 
-## 💾 Datenmodell (`printers.json`)
+## ⌨️ Tastaturbefehle (nur im interaktiven Modus)
+
+| Eingabe | Funktion                       |
+| ------- | ------------------------------ |
+| `exit`  | Programm beenden               |
+| `ENTER` | Weiter / Bestätigen            |
+| `Y/n`   | Ja-/Nein-Auswahl (Default: Ja) |
+
+---
+
+## 💾 Datenstruktur (`printers.json`)
 
 ```json
 {
-  "Standortname": [
+  "Büro EG": [
     {
       "ip": "10.97.207.86",
-      "name": "Druckername",
-      "driver_inf_path": "/pfad/zur/datei.inf",
-      "driver_name": "Treibername",
-      "model": "Druckermodell"
+      "name": "Canon123",
+      "driver_inf_path": "C:/Treiber/canon.inf",
+      "driver_name": "CanonUFRII",
+      "model": "Canon MF123"
     }
   ]
 }
@@ -212,21 +219,21 @@ python main.py backup
 
 ## 🔐 Sicherheitshinweise
 
-* IP-Adressen müssen **eindeutig** sein
-* `.inf`-Pfad muss **gültig** sein
-* Standorte dürfen **nur leer gelöscht** werden
-* Backups werden **automatisch** gespeichert
+* IP-Adressen müssen eindeutig sein
+* Treiberpfad (`.inf`) muss gültig & zugreifbar sein
+* Standorte dürfen nur gelöscht werden, wenn sie **leer** sind
+* Backups erfolgen automatisch bei jeder Änderung
 
 ---
 
 ## ⚠️ Fehlerbehandlung
 
-* ❌ Ungültige IP-Adressen werden abgefangen
-* 🔁 Ungültige Menüeingaben werden erneut abgefragt
-* Farbige Fehlerausgaben:
+* ❌ Ungültige IPs werden abgefangen
+* 🔁 Ungültige Eingaben im Menü werden erneut abgefragt
+* Farbliche Ausgaben:
 
-  * ❌ Kritischer Fehler
-  * ⚠️ Warnung
+  * ❌ = Fehler
+  * ⚠️ = Warnung
 
 ---
 
@@ -237,20 +244,23 @@ python main.py backup
    ```bash
    pip install -r requirements.txt
    ```
-2. Hauptprogramm starten:
+
+2. CLI starten:
 
    ```bash
    python main.py
    ```
-3. Exe-Datei erstellen (optional):
+
+3. Exe erzeugen (optional):
 
    ```bash
    pyinstaller --onefile main.py --name druckautoinstall.exe
    ```
-4. Webinterface öffnen:
-   [http://localhost:8765](http://localhost:8765)
 
 ---
 
 **👤 Autor:** Dmytro Shyrokov
 
+---
+
+Wenn du willst, exportiere ich diese Doku auch als `.md`, `.pdf` oder füge sie in dein Projekt ein (`README.md`). Sag einfach Bescheid!
