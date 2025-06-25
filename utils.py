@@ -36,9 +36,13 @@ def show_overview_of_location(location):
     table.field_names = ["#", "Name", "IP", "Modell", "Treiber", "Verfügbar"]
 
     for p_idx, printer in enumerate(printers):
-        percent = (p_idx+1) / len(printers)
+        percent = (p_idx + 1) / len(printers)
         filled = int(20 * percent)
-        print(f"\r{Style.BRIGHT + Fore.CYAN}[Availability check... ] {Fore.RESET}|{"█" * filled}{" " * (20 - filled)}| {(percent * 100):.2f}%{Style.RESET_ALL}", end="", flush=True)
+        print(
+            f"\r{Style.BRIGHT + Fore.CYAN}[Availability check... ] {Fore.RESET}|{"█" * filled}{" " * (20 - filled)}| {(percent * 100):.2f}%{Style.RESET_ALL}",
+            end="",
+            flush=True,
+        )
         status = printer.is_available()
 
         status_icon = (
