@@ -29,7 +29,7 @@ def show_overview_of_location(location):
     printers = location.get_printers()
 
     if not printers:
-        print(Fore.LIGHTBLACK_EX + "  (Keine Drucker vorhanden)\n" + Style.RESET_ALL)
+        print(Fore.LIGHTBLACK_EX + "  (Keine Drucker vorhanden)" + Style.RESET_ALL)
         return
 
     table = PrettyTable()
@@ -81,4 +81,4 @@ def prettified_locations_output(locations: list) -> str:
 
     locations = [location.to_str(idx) for idx, location in enumerate(locations)]
 
-    return f"{"\n".join(locations)}\n"
+    return f"{"\n".join(locations)}"

@@ -114,6 +114,8 @@ def cli_main(args):
 
 def interactive_main():
 
+    os.system("cls")
+
     while True:
         storage = Storage()
         storage.load_from_json(output=False)
@@ -129,9 +131,16 @@ def interactive_main():
                 )
 
                 if location_name:
-                    _, location = storage.get_location_by_name(args.location)
+                    _, location = storage.get_location_by_name(location_name)
+
+                    if not location:
+                        print(
+                            f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}"
+                        )
+                        continue
+
                     show_overview_of_location(location)
-                    return
+                    continue
 
                 show_overview_of_storage(storage)
             case 2:
@@ -156,6 +165,8 @@ def interactive_main():
                 storage.restore_from_backup()
             case 8:
                 storage.create_backup(manual=True)
+
+        print()
 
 
 if __name__ == "__main__":

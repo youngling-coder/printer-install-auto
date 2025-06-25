@@ -29,7 +29,7 @@ class Storage:
             location.add_printer(printer)
 
             print(
-                f"{Style.BRIGHT + Fore.GREEN}✅ Printer added successfully!{Style.RESET_ALL}\n"
+                f"{Style.BRIGHT + Fore.GREEN}✅ Printer added successfully!{Style.RESET_ALL}"
             )
 
             self.write_dict_as_json()
@@ -45,7 +45,7 @@ class Storage:
         if self.get_location_by_name(location_name)[1]:
             if output:
                 print(
-                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location_name}' already exists!{Style.RESET_ALL}\n"
+                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location_name}' already exists!{Style.RESET_ALL}"
                 )
 
         else:
@@ -58,7 +58,7 @@ class Storage:
                 self.__locations.append(Location(location_name))
                 if output:
                     print(
-                        f"{Style.BRIGHT + Fore.GREEN}✅ Location '{location_name}' is created!{Style.RESET_ALL}\n"
+                        f"{Style.BRIGHT + Fore.GREEN}✅ Location '{location_name}' is created!{Style.RESET_ALL}"
                     )
 
                 if save:
@@ -72,7 +72,7 @@ class Storage:
 
         if location and location.get_printers():
             print(
-                f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location.name}' contain printers!{Fore.RESET} Delete all the printers from this location first!{Style.RESET_ALL}\n"
+                f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location.name}' contain printers!{Fore.RESET} Delete all the printers from this location first!{Style.RESET_ALL}"
             )
 
         else:
@@ -96,7 +96,7 @@ class Storage:
     ) -> None:
 
         print(
-            f"{Fore.YELLOW + Style.BRIGHT}⚠️  All the info about this printer will be removed!\n"
+            f"{Fore.YELLOW + Style.BRIGHT}⚠️  All the info about this printer will be removed!"
         )
         print(printer.to_str(0))
 
