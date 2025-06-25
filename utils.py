@@ -17,9 +17,6 @@ total_actions_count = len(actions)
 
 def help_():
 
-    print(
-        f"{Style.BRIGHT}{Fore.GREEN}🌐 Web Overview: {Fore.CYAN}http://localhost:8765/{Style.RESET_ALL}\n"
-    )
     print(f"{Fore.CYAN + Style.BRIGHT}Commands: {Style.RESET_ALL}\n")
 
     for idx, action in enumerate(actions):
@@ -39,6 +36,9 @@ def show_overview_of_location(location):
     table.field_names = ["#", "Name", "IP", "Modell", "Treiber", "Verfügbar"]
 
     for p_idx, printer in enumerate(printers):
+        percent = (p_idx+1) / len(printers)
+        filled = int(20 * percent)
+        print(f"\r{Style.BRIGHT + Fore.CYAN}[Availability check... ] {Fore.RESET}|{"█" * filled}{" " * (20 - filled)}| {(percent * 100):.2f}%{Style.RESET_ALL}", end="", flush=True)
         status = printer.is_available()
 
         status_icon = (
@@ -58,6 +58,7 @@ def show_overview_of_location(location):
             ]
         )
 
+    print()
     print(table)
 
 
