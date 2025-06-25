@@ -118,8 +118,6 @@ def interactive_main():
         storage = Storage()
         storage.load_from_json(output=False)
 
-        os.system("cls" if os.name == "nt" else "clear")
-
         print(f'Type {Style.BRIGHT}"exit"{Style.RESET_ALL} to quit the program\n')
 
         current_action = get_current_action()
@@ -158,10 +156,6 @@ def interactive_main():
                 storage.restore_from_backup()
             case 8:
                 storage.create_backup(manual=True)
-
-        input(
-            f"{Style.BRIGHT + Fore.CYAN}Press ENTER to continue...\n{Style.RESET_ALL}"
-        )
 
 
 if __name__ == "__main__":
