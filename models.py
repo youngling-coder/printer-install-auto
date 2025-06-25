@@ -1,6 +1,6 @@
 import socket
 from colorama import Fore, Style
-
+from prettytable import PrettyTable
 
 class Location:
     def __init__(self, name: str):
@@ -8,7 +8,9 @@ class Location:
         self.__printers: list["Printer"] = []
 
     def get_printer_by_idndex(self, printer_idx: int) -> "Printer":
-        return self.__printers[printer_idx]
+
+        if self.__printers:
+            return self.__printers[printer_idx]
 
     def get_printers(self, as_dicts: bool = False) -> list["Printer"]:
 
@@ -38,6 +40,43 @@ class Location:
 
     def to_str(self, idx: int) -> str:
         return f"{Style.BRIGHT}{idx+1}. {self.name}{Style.RESET_ALL}"
+    
+    def overview(self):
+        printers = self.get_printers()
+
+        table = Fore.LIGHTBLACK_EX + "  (Keine Drucker vorhanden)" + Style.RESET_ALL
+
+        if printers:
+            table = PrettyTable()
+            table.field_names = ["#", "Name", "IP", "Modell", "Treiber", "Verfügbar"]
+            for p_idx, printer in enumerate(printers):
+                percent = (p_idx + 1) / len(printers)
+                filled = int(20 * percent)
+                print(
+                    f"\r{Style.BRIGHT + Fore.CYAN}[ Availability check... ] {Fore.RESET}|{"█" * filled}{" " * (20 - filled)}| {(percent * 100):.2f}%{Style.RESET_ALL}",
+                    end="",
+                    flush=True,
+                )
+                status = printer.is_available()
+
+                status_icon = (
+                    Fore.GREEN + "✅ Ja" + Style.RESET_ALL
+                    if status
+                    else Fore.RED + "❌ Nein" + Style.RESET_ALL
+                )
+
+                table.add_row(
+                    [
+                        p_idx + 1,
+                        printer.name,
+                        printer.ip,
+                        printer.model,
+                        printer.driver_name,
+                        status_icon,
+                    ]
+                )
+
+        print(f"\n{table}")
 
 
 class Printer:
@@ -70,14 +109,29 @@ class Printer:
             model=data["model"],
         )
 
-    def to_str(self, idx: int, tab_level: int = 0) -> str:
+    def to_str(self, idx: int) -> str:
 
-        output = (
-            f"{"  " * tab_level}{idx+1}. {Style.BRIGHT + Fore.CYAN}{self.name}\n"
-            f"  {"  " * tab_level}{Fore.YELLOW}Model  : {Fore.RESET}{self.model}\n"
-            f"  {"  " * tab_level}{Fore.YELLOW}IP     : {Fore.RESET}{self.ip}\n"
-            f"  {"  " * tab_level}{Fore.YELLOW}Driver name : {Fore.RESET}{self.driver_name or '—'}\n"
-            f"  {"  " * tab_level}{Fore.YELLOW}Driver .inf path : {Fore.RESET}{self.driver_inf_path or '—'}\n"
+        table = PrettyTable()
+        table.field_names = ["#", "Name", "IP", "Modell", "Treiber", "Verfügbar"]
+
+
+        status = self.is_available()
+
+        status_icon = (
+            Fore.GREEN + "✅ Ja" + Style.RESET_ALL
+            if status
+            else Fore.RED + "❌ Nein" + Style.RESET_ALL
         )
 
-        return output
+        table.add_row(
+            [
+                idx+1,
+                self.name,
+                self.ip,
+                self.model,
+                self.driver_name,
+                status_icon,
+            ]
+        )
+
+        return str(table)

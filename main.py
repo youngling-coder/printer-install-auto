@@ -68,23 +68,22 @@ def cli_main(args):
 
 
 def interactive_main():
-    os.system("cls" if os.name == "nt" else "clear")
+    os.system("cls")
 
     while True:
         storage = utils.get_storage()
-        print(f'Type {Style.BRIGHT}"exit"{Style.RESET_ALL} to quit the program\n')
 
         match get_current_action():
             case 1:
                 name = get_generic_input(
-                    f"{Style.BRIGHT + Fore.CYAN}[Optional]{Style.RESET_ALL} Enter location name: "
+                    f"{Style.BRIGHT + Fore.CYAN}[ Optional ]{Style.RESET_ALL} Enter location name: "
                 )
                 if name:
-                    _, loc = utils.handle_location_check(storage, name)
-                    if loc:
-                        utils.show_overview_of_location(loc)
+                    _, location = utils.handle_location_check(storage, name)
+                    if location:
+                        location.overview()
                 else:
-                    utils.show_overview_of_storage(storage)
+                    storage.overview()
 
             case 2:
                 printer, location = input_printer_data(storage)
@@ -92,7 +91,11 @@ def interactive_main():
 
             case 3:
                 printer, location = select_printer_data(storage)
-                storage.remove_printer_from_location(printer, location)
+                if not printer:
+                    utils.print_error("Printer not found!")
+
+                else:
+                    storage.remove_printer_from_location(printer, location)
 
             case 4:
                 printer, _ = select_printer_data(storage)

@@ -10,7 +10,7 @@ def build_arg_parser():
     overview.add_argument("--location", required=False)
 
     add = subparsers.add_parser("add", help="Add a printer")
-    add.add_argument("location-name")
+    add.add_argument("location_name")
     add.add_argument("ip")
     add.add_argument("name")
     add.add_argument("model")
@@ -20,16 +20,16 @@ def build_arg_parser():
     rem = subparsers.add_parser("remove", help="Remove a printer")
 
     rem.add_argument("ip")
-    rem.add_argument("location-name")
+    rem.add_argument("location_name")
 
     install = subparsers.add_parser("install", help="Install a printer")
     install.add_argument("ip")
 
     create_loc = subparsers.add_parser("create-location", help="Create a new location")
-    create_loc.add_argument("location-name")
+    create_loc.add_argument("location_name")
 
     remove_loc = subparsers.add_parser("remove-location", help="Remove a location")
-    remove_loc.add_argument("location-name")
+    remove_loc.add_argument("location_name")
 
     subparsers.add_parser("restore", help="Restore from backup")
 

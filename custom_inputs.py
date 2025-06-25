@@ -1,10 +1,6 @@
 from typing import Optional
 from colorama import Style, Fore
-from utils import (
-    help_,
-    prettified_locations_output,
-    total_actions_count,
-)
+import utils
 import sys, os
 from models import Printer, Location
 
@@ -66,21 +62,21 @@ def get_integer_input(prompt: str, range_: Optional[range] = None):
 
             if range_ and (value not in range_):
                 raise IndexError(
-                    f"{Style.BRIGHT + Fore.RED}Value is out of range!\n{Style.RESET_ALL}"
+                    f"Value is out of range!\n"
                 )
 
             return value
 
         except ValueError:
-            print(f"{Style.BRIGHT + Fore.RED}Incompatible value!\n{Style.RESET_ALL}")
+            utils.print_error(f"Incompatible value!\n")
 
         except IndexError as e:
-            print(e)
+            utils.print_error(e)
 
 
 def get_printer_index_input(location: Location):
-    for idx, printer in enumerate(location.get_printers()):
-        print(printer.to_str(idx))
+    
+    location.overview()
 
     printer_id = get_integer_input(
         f"Select printer: ", range_=range(1, len(location.get_printers()) + 1)
@@ -91,7 +87,7 @@ def get_printer_index_input(location: Location):
 
 def get_location_index_input(locations: Location) -> int:
 
-    print(prettified_locations_output(locations))
+    print(utils.prettified_locations_output(locations))
 
     location_id = get_integer_input(
         "Enter city number: ", range_=range(1, len(locations) + 1)
@@ -101,10 +97,10 @@ def get_location_index_input(locations: Location) -> int:
 
 
 def get_current_action():
-    help_()
+    utils.help_()
 
     current_action = get_integer_input(
-        "Enter action you want to perform: ", range_=range(1, total_actions_count + 1)
+        "Enter action you want to perform: ", range_=range(1, utils.total_actions_count + 1)
     )
 
     return current_action

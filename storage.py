@@ -6,6 +6,7 @@ import shutil
 from colorama import Style, Fore
 
 from models import Printer, Location
+import utils
 import custom_inputs
 
 
@@ -82,13 +83,13 @@ class Storage:
                 if action_confirmed:
                     self.__locations.remove(location)
                     print(
-                        f"{Style.BRIGHT + Fore.GREEN}✅ '{location.name}' location is removed!\n{Style.RESET_ALL}"
+                        f"{Style.BRIGHT + Fore.GREEN}✅ '{location.name}' location is removed!{Style.RESET_ALL}"
                     )
                     self.write_dict_as_json()
 
             except ValueError as e:
                 print(
-                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Skipping '{location.name}' as it is not present in the list!\n{Style.RESET_ALL}"
+                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Skipping '{location.name}' as it is not present in the list!{Style.RESET_ALL}"
                 )
 
     def remove_printer_from_location(
@@ -96,7 +97,7 @@ class Storage:
     ) -> None:
 
         print(
-            f"{Fore.YELLOW + Style.BRIGHT}⚠️  All the info about this printer will be removed!"
+            f"{Fore.YELLOW + Style.BRIGHT}⚠️  All the info about this printer will be removed!{Style.RESET_ALL}"
         )
         print(printer.to_str(0))
 
@@ -111,7 +112,7 @@ class Storage:
                     location.get_printers().pop(idx)
 
             print(
-                f"{Style.BRIGHT + Fore.GREEN}✅ Printer removed successfully!\n{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.GREEN}✅ Printer removed successfully!{Style.RESET_ALL}"
             )
 
             self.write_dict_as_json()
@@ -173,7 +174,7 @@ class Storage:
 
         if not os.path.exists(path):
             raise FileNotFoundError(
-                f"{Style.BRIGHT + Fore.RED}JSON file not found!\n{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.RED}JSON file not found!{Style.RESET_ALL}"
             )
 
         druckers = {}
@@ -212,10 +213,6 @@ class Storage:
                 )
 
                 if not action_confirmed:
-
-                    print(
-                        f"{Style.BRIGHT + Fore.YELLOW}⚠️  Backup creation canceled!\n{Style.RESET_ALL}"
-                    )
                     return
 
         if not backup_path:
@@ -227,7 +224,7 @@ class Storage:
         shutil.copy2(self.__filename, backup_path)
 
         print(
-            f"{Style.BRIGHT + Fore.GREEN}✅ {"[Auto]" if not manual else ""}{Fore.RESET} Backup created successfully!\n{Style.RESET_ALL}"
+            f"{Style.BRIGHT + Fore.GREEN}✅ {"[ Auto ]" if not manual else ""}{Fore.RESET} Backup created successfully!{Style.RESET_ALL}"
         )
 
     def restore_from_backup(self):
@@ -244,19 +241,16 @@ class Storage:
         )
 
         if action_confirmed:
+            
+            try:
+                shutil.copy2(backup_path, self.__filename)
+                self.load_from_json()
+                print(
+                    f"{Style.BRIGHT + Fore.GREEN}✅ Successfully restored from backup!{Style.RESET_ALL}"
+                )
 
-            shutil.copy2(backup_path, self.__filename)
-            self.load_from_json()
-            print(
-                f"{Style.BRIGHT + Fore.GREEN}✅ Successfully restored from backup!\n{Style.RESET_ALL}"
-            )
-
-            return
-
-        print(
-            f"{Style.BRIGHT + Fore.YELLOW}⚠️  Backup restoration canceled!\n{Style.RESET_ALL}"
-        )
-
+            except Exception as e:
+                utils.print_error(e)
     def write_dict_as_json(self, path: str = ""):
 
         file = os.path.join(path, self.__filename)
@@ -267,3 +261,19 @@ class Storage:
 
         with open(file, "w") as drucker_file:
             json.dump(data, drucker_file, indent=4)
+
+    def overview(self):
+
+        table = ""
+        locations = self.get_locations()
+
+        if not locations:
+            print(Fore.YELLOW + "Keine Standorte vorhanden." + Style.RESET_ALL)
+            return
+
+        for l_idx, location in enumerate(locations):
+            print(
+                f"{"\n" if l_idx else ""}{Style.BRIGHT}Standort {l_idx+1}: {location.name}{Style.RESET_ALL}"
+            )
+
+            location.overview()
