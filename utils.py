@@ -1,5 +1,6 @@
 from colorama import Style, Fore
 from prettytable import PrettyTable
+from storage import Storage
 
 actions = [
     "Printer overview",
@@ -23,6 +24,30 @@ def help_():
         print(f"{idx+1}  ::  {action}")
 
     print()
+
+
+def get_storage():
+    s = Storage()
+    s.load_from_json(output=False)
+    return s
+
+
+def print_error(msg):
+    print(f"{Style.BRIGHT + Fore.RED}❌ {msg} {Style.RESET_ALL}")
+
+
+def handle_location_check(storage, name):
+    idx, loc = storage.get_location_by_name(name)
+    if not loc:
+        print_error("Location not found!")
+    return idx, loc
+
+
+def handle_printer_check(storage, ip):
+    printer = storage.get_printer_by_ip(ip)
+    if not printer:
+        print_error("Printer not found!")
+    return printer
 
 
 def show_overview_of_location(location):
@@ -85,4 +110,4 @@ def prettified_locations_output(locations: list) -> str:
 
     locations = [location.to_str(idx) for idx, location in enumerate(locations)]
 
-    return f"{"\n".join(locations)}"
+    return f"{"\n".join(locations)}\n"

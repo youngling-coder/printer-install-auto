@@ -1,6 +1,6 @@
 import subprocess
-from colorama import Fore, Style
 from custom_inputs import get_yn_confirmation
+from utils import print_error
 
 
 class Installer:
@@ -14,7 +14,7 @@ class Installer:
         is_printer_available = self.__printer.is_available()
 
         if not is_printer_available:
-            print(f"{Style.BRIGHT + Fore.RED}❌ Printer is unavailable!")
+            print_error("Printer is unavailable!")
             return
 
         if action_confirmed:

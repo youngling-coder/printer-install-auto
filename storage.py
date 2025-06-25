@@ -6,7 +6,7 @@ import shutil
 from colorama import Style, Fore
 
 from models import Printer, Location
-from custom_inputs import get_yn_confirmation, get_generic_input
+import custom_inputs
 
 
 class Storage:
@@ -23,7 +23,7 @@ class Storage:
             f'{Style.BRIGHT}Will be added to "{Fore.CYAN + location.name + Fore.RESET}"\n'
         )
 
-        action_confirmed = get_yn_confirmation("Proceed? [Y/n]: ")
+        action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
 
         if action_confirmed:
             location.add_printer(printer)
@@ -52,7 +52,7 @@ class Storage:
             action_confirmed = True
 
             if confirm:
-                action_confirmed = get_yn_confirmation("Proceed? [Y/n]: ")
+                action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
 
             if action_confirmed:
                 self.__locations.append(Location(location_name))
@@ -77,7 +77,7 @@ class Storage:
 
         else:
             try:
-                action_confirmed = get_yn_confirmation("Proceed? [Y/n]: ")
+                action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
 
                 if action_confirmed:
                     self.__locations.remove(location)
@@ -100,7 +100,7 @@ class Storage:
         )
         print(printer.to_str(0))
 
-        action_confirmed = get_yn_confirmation("Proceed? [Y/n]: ")
+        action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
 
         if action_confirmed:
 
@@ -201,13 +201,13 @@ class Storage:
     def create_backup(self, manual: bool = False, backup_path: str = None):
 
         if manual:
-            backup_path = get_generic_input(
+            backup_path = custom_inputs.get_generic_input(
                 f"{Style.BRIGHT + Fore.CYAN}[Optional]{Style.RESET_ALL} Enter path or filename: "
             )
 
             if os.path.exists(backup_path):
 
-                action_confirmed = get_yn_confirmation(
+                action_confirmed = custom_inputs.get_yn_confirmation(
                     f"{Style.BRIGHT + Fore.YELLOW}File already exists! Proceed? [Y/n]: "
                 )
 
@@ -232,14 +232,14 @@ class Storage:
 
     def restore_from_backup(self):
 
-        backup_path = get_generic_input(
+        backup_path = custom_inputs.get_generic_input(
             f"{Style.BRIGHT + Fore.CYAN}[Optional]{Style.RESET_ALL} Enter path or filename: "
         )
 
         if not backup_path:
             backup_path = self.__backup_file
 
-        action_confirmed = get_yn_confirmation(
+        action_confirmed = custom_inputs.get_yn_confirmation(
             f"{Style.BRIGHT + Fore.YELLOW}⚠️  Current storage file will be overwritten!{Fore.RESET} Proceed? [Y/n]:{Style.RESET_ALL} "
         )
 

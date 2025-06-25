@@ -1,7 +1,7 @@
 from typing import Optional
 from colorama import Style, Fore
-from utils import help_
 from utils import (
+    help_,
     prettified_locations_output,
     total_actions_count,
 )

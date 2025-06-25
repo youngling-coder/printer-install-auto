@@ -1,8 +1,5 @@
 import os
 import sys
-import logging
-import threading
-
 from colorama import Style, Fore
 
 from argparser import build_arg_parser
@@ -13,97 +10,55 @@ from custom_inputs import (
     get_location_index_input,
     get_generic_input,
 )
-from storage import Storage
-from models import Printer, Location
-from utils import show_overview_of_storage, show_overview_of_location
 from installer import Installer
+from models import Printer
+import utils
 
 
 def cli_main(args):
-    storage = Storage()
-    storage.load_from_json(output=False)
-
-    printer = Printer.from_dict(
-        {
-            "ip": "",
-            "name": "",
-            "driver_inf_path": "",
-            "model": "",
-            "driver_name": "",
-        }
-    )
+    storage = utils.get_storage()
 
     match args.action:
         case "overview":
             if args.location:
-                _, location = storage.get_location_by_name(args.location)
-                show_overview_of_location(location)
-                return
-
-            show_overview_of_storage(storage)
+                _, location = utils.handle_location_check(storage, args.location)
+                if location:
+                    utils.show_overview_of_location(location)
+            else:
+                utils.show_overview_of_storage(storage)
 
         case "add":
-            printer.ip = args.ip
-            printer.name = args.name
-            printer.driver_name = args.driver_name
-            printer.driver_inf_path = args.driver_inf_path
-            printer.model = args.model
-
-            _, location = storage.get_location_by_name(args.location_name)
-
-            if not location:
-                print(
-                    f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}"
-                )
-                return
-
-            storage.add_printer_to_location(printer, location)
+            printer = Printer.from_dict(
+                {
+                    "ip": args.ip,
+                    "name": args.name,
+                    "driver_inf_path": args.driver_inf_path,
+                    "model": args.model,
+                    "driver_name": args.driver_name,
+                }
+            )
+            _, location = utils.handle_location_check(storage, args.location_name)
+            if location:
+                storage.add_printer_to_location(printer, location)
 
         case "remove":
-
-            printer = storage.get_printer_by_ip(args.ip)
-
-            if not printer:
-                print(
-                    f"{Style.BRIGHT + Fore.RED}❌ Printer not found! {Style.RESET_ALL}"
-                )
-                return
-
-            _, location = storage.get_location_by_name(args.location_name)
-
-            if not location:
-                print(
-                    f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}"
-                )
-                return
-
-            storage.remove_printer_from_location(printer, location)
+            printer = utils.handle_printer_check(storage, args.ip)
+            _, location = utils.handle_location_check(storage, args.location_name)
+            if printer and location:
+                storage.remove_printer_from_location(printer, location)
 
         case "install":
-            printer = storage.get_printer_by_ip(args.ip)
-
-            if not printer:
-                print(
-                    f"{Style.BRIGHT + Fore.RED}❌ Printer not found! {Style.RESET_ALL}"
-                )
-                return
-
-            installer = Installer(printer)
-            installer.run()
+            printer = utils.handle_printer_check(storage, args.ip)
+            if printer:
+                Installer(printer).run()
 
         case "create-location":
             storage.create_location(args.location_name, confirm=True)
 
         case "remove-location":
-            location_idx, _ = storage.get_location_by_name(args.location_name)
-
-            if not location_idx:
-                print(
-                    f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}"
-                )
-                return
-
-            storage.remove_location(location_idx)
+            idx, _ = utils.handle_location_check(storage, args.location_name)
+            if idx is not None:
+                storage.remove_location(idx)
 
         case "restore":
             storage.restore_from_backup()
@@ -113,56 +68,47 @@ def cli_main(args):
 
 
 def interactive_main():
-
-    os.system("cls")
+    os.system("cls" if os.name == "nt" else "clear")
 
     while True:
-        storage = Storage()
-        storage.load_from_json(output=False)
-
+        storage = utils.get_storage()
         print(f'Type {Style.BRIGHT}"exit"{Style.RESET_ALL} to quit the program\n')
 
-        current_action = get_current_action()
-
-        match current_action:
+        match get_current_action():
             case 1:
-                location_name = get_generic_input(
+                name = get_generic_input(
                     f"{Style.BRIGHT + Fore.CYAN}[Optional]{Style.RESET_ALL} Enter location name: "
                 )
+                if name:
+                    _, loc = utils.handle_location_check(storage, name)
+                    if loc:
+                        utils.show_overview_of_location(loc)
+                else:
+                    utils.show_overview_of_storage(storage)
 
-                if location_name:
-                    _, location = storage.get_location_by_name(location_name)
-
-                    if not location:
-                        print(
-                            f"{Style.BRIGHT + Fore.RED}❌ Location not found! {Style.RESET_ALL}"
-                        )
-                        continue
-
-                    show_overview_of_location(location)
-                    continue
-
-                show_overview_of_storage(storage)
             case 2:
                 printer, location = input_printer_data(storage)
                 storage.add_printer_to_location(printer, location)
+
             case 3:
                 printer, location = select_printer_data(storage)
                 storage.remove_printer_from_location(printer, location)
+
             case 4:
                 printer, _ = select_printer_data(storage)
-                installer = Installer(printer)
-                installer.run()
+                Installer(printer).run()
+
             case 5:
-                location_name = get_generic_input(
-                    "Enter new location's name: ", empty=False
-                )
-                storage.create_location(location_name, confirm=True)
+                name = get_generic_input("Enter new location's name: ", empty=False)
+                storage.create_location(name, confirm=True)
+
             case 6:
-                location_idx = get_location_index_input(storage.get_locations())
-                storage.remove_location(location_idx)
+                idx = get_location_index_input(storage.get_locations())
+                storage.remove_location(idx)
+
             case 7:
                 storage.restore_from_backup()
+
             case 8:
                 storage.create_backup(manual=True)
 
@@ -171,8 +117,7 @@ def interactive_main():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        parser = build_arg_parser()
-        args = parser.parse_args()
+        args = build_arg_parser().parse_args()
         cli_main(args)
     else:
         interactive_main()
