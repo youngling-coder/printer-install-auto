@@ -53,7 +53,9 @@ def get_ip_input(storage) -> str:
             print(e)
 
 
-def get_integer_input(prompt: str, range_: Optional[range] = None, optional: bool = False) -> int:
+def get_integer_input(
+    prompt: str, range_: Optional[range] = None, optional: bool = False
+) -> int:
     """
     Fragt eine Ganzzahl vom Benutzer ab.
     Optional kann ein gültiger Wertebereich angegeben werden.
@@ -68,6 +70,9 @@ def get_integer_input(prompt: str, range_: Optional[range] = None, optional: boo
             return value
 
         except ValueError:
+            if optional:
+                return ""
+
             utils.print_error("Incompatible value!\n")
 
         except IndexError as e:
@@ -95,8 +100,13 @@ def get_location_index_input(locations: list[Location], optional: bool = False) 
     print(utils.prettified_locations_output(locations))
 
     location_id = get_integer_input(
-        "Enter city number: ", range_=range(1, len(locations) + 1, optional)
+        "Enter location number: ",
+        range_=range(1, len(locations) + 1),
+        optional=optional,
     )
+
+    if optional and not location_id:
+        return
 
     return location_id - 1
 
@@ -128,8 +138,24 @@ def input_printer_data(storage) -> tuple[Printer, Location]:
     new_printer["ip"] = get_ip_input(storage)
     new_printer["name"] = get_generic_input("Enter printer's name: ", empty=False)
     new_printer["model"] = get_generic_input("Enter printer's model: ", empty=False)
-    new_printer["driver_name"] = get_generic_input("Enter printer's driver name: ", empty=False)
-    new_printer["driver_inf_path"] = get_generic_input("Enter printer's driver path: ", empty=False)
+
+    action_confirmed = False
+    for printer in storage.get_printers():
+        if printer.model.lower() == new_printer["model"].lower():
+            new_printer["driver_name"] = printer.driver_name
+            new_printer["driver_inf_path"] = printer.driver_inf_path
+            action_confirmed = get_yn_confirmation(
+                "Ein Drucker dieses Modells existiert bereits! Möchten Sie die Treibereinstellungen übernehmen? [Y/n]: "
+            )
+            break
+
+    if not action_confirmed:
+        new_printer["driver_name"] = get_generic_input(
+            "Enter printer's driver name: ", empty=False
+        )
+        new_printer["driver_inf_path"] = get_generic_input(
+            "Enter printer's driver path: ", empty=False
+        )
 
     printer = Printer.from_dict(new_printer)
 

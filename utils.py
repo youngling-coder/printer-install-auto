@@ -3,14 +3,14 @@ from storage import Storage
 
 # Liste aller möglichen Aktionen, die der Benutzer im interaktiven Modus auswählen kann.
 actions = [
-    "Printer overview",                       # 1
-    "Add a printer with name, IP, and driver",  # 2
-    "Remove a printer by place and IP",       # 3
-    "Install a printer",                      # 4
-    "Create a location",                      # 5
-    "Remove a location",                      # 6
-    "Restore from backup",                    # 7
-    "Create backup",                          # 8
+    "Printer overview",
+    "Add a printer with name, IP, and driver",
+    "Remove a printer by place and IP",
+    "Install a printer",
+    "Create a location",
+    "Remove a location",
+    "Restore from backup",
+    "Create backup",
 ]
 
 # Anzahl aller Aktionen (wird für Bereichsprüfung verwendet)

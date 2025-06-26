@@ -24,13 +24,17 @@ class Storage:
         """
         print()
         print(printer.to_str(0))
-        print(f'{Style.BRIGHT}Will be added to "{Fore.CYAN + location.name + Fore.RESET}"\n')
+        print(
+            f'{Style.BRIGHT}Will be added to "{Fore.CYAN + location.name + Fore.RESET}"\n'
+        )
 
         action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
 
         if action_confirmed:
             location.add_printer(printer)
-            print(f"{Style.BRIGHT + Fore.GREEN}✅ Printer added successfully!{Style.RESET_ALL}")
+            print(
+                f"{Style.BRIGHT + Fore.GREEN}✅ Printer added successfully!{Style.RESET_ALL}"
+            )
             self.write_dict_as_json()
 
     def create_location(
@@ -46,7 +50,9 @@ class Storage:
         """
         if self.get_location_by_name(location_name)[1]:
             if output:
-                print(f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location_name}' already exists!{Style.RESET_ALL}")
+                print(
+                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location_name}' already exists!{Style.RESET_ALL}"
+                )
         else:
             action_confirmed = True
             if confirm:
@@ -55,7 +61,9 @@ class Storage:
             if action_confirmed:
                 self.__locations.append(Location(location_name))
                 if output:
-                    print(f"{Style.BRIGHT + Fore.GREEN}✅ Location '{location_name}' is created!{Style.RESET_ALL}")
+                    print(
+                        f"{Style.BRIGHT + Fore.GREEN}✅ Location '{location_name}' is created!{Style.RESET_ALL}"
+                    )
                 if save:
                     self.write_dict_as_json()
                 return self.__locations[-1]
@@ -68,22 +76,32 @@ class Storage:
         location = self.get_location_by_index(location_idx)
 
         if location and location.get_printers():
-            print(f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location.name}' contain printers!{Fore.RESET} Delete all the printers from this location first!{Style.RESET_ALL}")
+            print(
+                f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location.name}' contain printers!{Fore.RESET} Delete all the printers from this location first!{Style.RESET_ALL}"
+            )
         else:
             try:
                 action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
                 if action_confirmed:
                     self.__locations.remove(location)
-                    print(f"{Style.BRIGHT + Fore.GREEN}✅ '{location.name}' location is removed!{Style.RESET_ALL}")
+                    print(
+                        f"{Style.BRIGHT + Fore.GREEN}✅ '{location.name}' location is removed!{Style.RESET_ALL}"
+                    )
                     self.write_dict_as_json()
             except ValueError:
-                print(f"{Style.BRIGHT + Fore.YELLOW}⚠️  Skipping '{location.name}' as it is not present in the list!{Style.RESET_ALL}")
+                print(
+                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Skipping '{location.name}' as it is not present in the list!{Style.RESET_ALL}"
+                )
 
-    def remove_printer_from_location(self, printer: Printer, location: Location) -> None:
+    def remove_printer_from_location(
+        self, printer: Printer, location: Location
+    ) -> None:
         """
         Entfernt einen bestimmten Drucker von einem bestimmten Standort – nach Bestätigung.
         """
-        print(f"{Fore.YELLOW + Style.BRIGHT}⚠️  All the info about this printer will be removed!{Style.RESET_ALL}")
+        print(
+            f"{Fore.YELLOW + Style.BRIGHT}⚠️  All the info about this printer will be removed!{Style.RESET_ALL}"
+        )
         print(printer.to_str(0))
 
         action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
@@ -94,7 +112,9 @@ class Storage:
                 if location_printers[idx].ip == printer.ip:
                     location.get_printers().pop(idx)
 
-            print(f"{Style.BRIGHT + Fore.GREEN}✅ Printer removed successfully!{Style.RESET_ALL}")
+            print(
+                f"{Style.BRIGHT + Fore.GREEN}✅ Printer removed successfully!{Style.RESET_ALL}"
+            )
             self.write_dict_as_json()
 
     def get_printer_by_ip(self, ip: str) -> Printer:
@@ -167,7 +187,9 @@ class Storage:
         Liest eine JSON-Datei von einem bestimmten Pfad.
         """
         if not os.path.exists(path):
-            raise FileNotFoundError(f"{Style.BRIGHT + Fore.RED}JSON file not found!{Style.RESET_ALL}")
+            raise FileNotFoundError(
+                f"{Style.BRIGHT + Fore.RED}JSON file not found!{Style.RESET_ALL}"
+            )
 
         with open(path, "r") as drucker_file:
             return json.load(drucker_file)
@@ -234,7 +256,9 @@ class Storage:
             try:
                 shutil.copy2(backup_path, self.__filename)
                 self.load_from_json()
-                print(f"{Style.BRIGHT + Fore.GREEN}✅ Successfully restored from backup!{Style.RESET_ALL}")
+                print(
+                    f"{Style.BRIGHT + Fore.GREEN}✅ Successfully restored from backup!{Style.RESET_ALL}"
+                )
             except Exception as e:
                 utils.print_error(e)
 

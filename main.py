@@ -92,13 +92,13 @@ def interactive_main():
         match get_current_action():
             case 1:
                 # Zeigt Übersicht für spezifischen oder alle Standorte
-                location = get_location_index_input(storage.get_locations(), optional=True)
-                if name:
-                    _, location = utils.handle_location_check(storage, name)
-                    if location:
-                        location.overview()
-                else:
+                location_idx = get_location_index_input(storage.get_locations(), True)
+
+                if location_idx is None:
                     storage.overview()
+                else:
+                    location = storage.get_location_by_index(location_idx)
+                    location.overview()
 
             case 2:
                 # Neue Druckerdaten eingeben und zu Standort hinzufügen
