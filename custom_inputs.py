@@ -1,21 +1,16 @@
 from typing import Optional
 from colorama import Style, Fore
 import utils
-import sys, os
+import sys
 from models import Printer, Location
 
 
-printer_base_data = {
-    "ip": "",
-    "name": "",
-    "driver_inf_path": "",
-    "model": "",
-    "driver": "",
-}
-
-
 def get_generic_input(prompt: str, empty: bool = True) -> str:
-
+    """
+    Fragt eine generische Benutzereingabe ab.
+    Beendet das Programm, wenn 'exit' eingegeben wird.
+    Bei empty=False werden leere Eingaben wiederholt.
+    """
     while True:
         value = input(prompt)
         print()
@@ -30,16 +25,20 @@ def get_generic_input(prompt: str, empty: bool = True) -> str:
 
 
 def get_yn_confirmation(prompt: str) -> bool:
-
+    """
+    Fragt eine Ja/Nein-Bestätigung ab.
+    Rückgabe ist True bei Eingabe mit 'y' beginnend oder leerer Eingabe.
+    """
     confirmation = get_generic_input(Style.BRIGHT + prompt + Style.RESET_ALL)
-
     return confirmation.lower().startswith("y") or confirmation == ""
 
 
 def get_ip_input(storage) -> str:
-
+    """
+    Fordert die Eingabe einer IP-Adresse vom Benutzer an
+    und überprüft deren Gültigkeit mithilfe des Storage-Objekts.
+    """
     while True:
-
         try:
             value = get_generic_input("Enter printer's IP address: ")
 
@@ -54,80 +53,94 @@ def get_ip_input(storage) -> str:
             print(e)
 
 
-def get_integer_input(prompt: str, range_: Optional[range] = None):
-
+def get_integer_input(prompt: str, range_: Optional[range] = None, optional: bool = False) -> int:
+    """
+    Fragt eine Ganzzahl vom Benutzer ab.
+    Optional kann ein gültiger Wertebereich angegeben werden.
+    """
     while True:
         try:
-            value = int(get_generic_input(prompt))
+            value = int(get_generic_input(prompt, optional))
 
             if range_ and (value not in range_):
-                raise IndexError(
-                    f"Value is out of range!\n"
-                )
+                raise IndexError("Value is out of range!\n")
 
             return value
 
         except ValueError:
-            utils.print_error(f"Incompatible value!\n")
+            utils.print_error("Incompatible value!\n")
 
         except IndexError as e:
             utils.print_error(e)
 
 
-def get_printer_index_input(location: Location):
-    
+def get_printer_index_input(location: Location) -> int:
+    """
+    Zeigt Übersicht der Drucker in einem Standort an
+    und fragt den Index eines Druckers vom Benutzer ab.
+    """
     location.overview()
 
     printer_id = get_integer_input(
-        f"Select printer: ", range_=range(1, len(location.get_printers()) + 1)
+        "Select printer: ", range_=range(1, len(location.get_printers()) + 1)
     )
 
     return printer_id - 1
 
 
-def get_location_index_input(locations: Location) -> int:
-
+def get_location_index_input(locations: list[Location], optional: bool = False) -> int:
+    """
+    Zeigt alle Standorte an und fragt den Index eines Standorts vom Benutzer ab.
+    """
     print(utils.prettified_locations_output(locations))
 
     location_id = get_integer_input(
-        "Enter city number: ", range_=range(1, len(locations) + 1)
+        "Enter city number: ", range_=range(1, len(locations) + 1, optional)
     )
 
     return location_id - 1
 
 
-def get_current_action():
+def get_current_action() -> int:
+    """
+    Zeigt verfügbaren Aktionen an und fragt gewünschte Aktion vom Benutzer ab.
+    """
     utils.help_()
 
     current_action = get_integer_input(
-        "Enter action you want to perform: ", range_=range(1, utils.total_actions_count + 1)
+        "Enter action you want to perform: ",
+        range_=range(1, utils.total_actions_count + 1),
     )
 
     return current_action
 
 
 def input_printer_data(storage) -> tuple[Printer, Location]:
-
+    """
+    Fragt vom Benutzer alle Daten für einen neuen Drucker ab.
+    Gibt ein Printer-Objekt und den zugehörigen Standort zurück.
+    """
     location = storage.get_location_by_index(
         get_location_index_input(storage.get_locations())
     )
-    new_printer = printer_base_data.copy()
+    new_printer = {}
 
     new_printer["ip"] = get_ip_input(storage)
-    new_printer["name"] = get_generic_input(f"Enter printer's name: ", empty=False)
-    new_printer["model"] = get_generic_input(f"Enter printer's model: ", empty=False)
-    new_printer["driver_name"] = get_generic_input(
-        f"Enter printer's driver name: ", empty=False
-    )
-    new_printer["driver_inf_path"] = get_generic_input(
-        f"Enter printer's driver path: ", empty=False
-    )
+    new_printer["name"] = get_generic_input("Enter printer's name: ", empty=False)
+    new_printer["model"] = get_generic_input("Enter printer's model: ", empty=False)
+    new_printer["driver_name"] = get_generic_input("Enter printer's driver name: ", empty=False)
+    new_printer["driver_inf_path"] = get_generic_input("Enter printer's driver path: ", empty=False)
+
     printer = Printer.from_dict(new_printer)
 
     return printer, location
 
 
 def select_printer_data(storage) -> tuple[Printer, Location]:
+    """
+    Lässt den Benutzer einen Standort und Drucker auswählen.
+    Gibt das ausgewählte Printer-Objekt und den zugehörigen Standort zurück.
+    """
     location_idx = get_location_index_input(storage.get_locations())
     location = storage.get_location_by_index(location_idx)
 
