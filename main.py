@@ -109,7 +109,7 @@ def interactive_main():
                 # Drucker auswählen und entfernen
                 printer, location = select_printer_data(storage)
                 if not printer:
-                    utils.print_error("Printer not found!")
+                    utils.print_error("Drucker nicht gefunden!")
                 else:
                     storage.remove_printer_from_location(printer, location)
 
@@ -120,7 +120,7 @@ def interactive_main():
 
             case 5:
                 # Neuen Standort anlegen
-                name = get_generic_input("Enter new location's name: ", empty=False)
+                name = get_generic_input("Name des neuen Standorts eingeben: ", empty=False)
                 storage.create_location(name, confirm=True)
 
             case 6:

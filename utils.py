@@ -3,14 +3,14 @@ from storage import Storage
 
 # Liste aller möglichen Aktionen, die der Benutzer im interaktiven Modus auswählen kann.
 actions = [
-    "Printer overview",
-    "Add a printer with name, IP, and driver",
-    "Remove a printer by place and IP",
-    "Install a printer",
-    "Create a location",
-    "Remove a location",
-    "Restore from backup",
-    "Create backup",
+    "Druckerübersicht anzeigen",
+    "Einen Drucker hinzufügen",
+    "Einen Drucker entfernen",
+    "Einen Drucker installieren",
+    "Einen neuen Standort erstellen",
+    "Einen Standort entfernen",
+    "Aus Backup wiederherstellen",
+    "Create Backup erstellen",
 ]
 
 # Anzahl aller Aktionen (wird für Bereichsprüfung verwendet)
@@ -21,7 +21,7 @@ def help_() -> None:
     """
     Gibt dem Benutzer eine Liste aller verfügbaren Aktionen aus.
     """
-    print(f'Type {Style.BRIGHT}"exit"{Style.RESET_ALL} to quit the program\n')
+    print(f'Geben Sie {Style.BRIGHT}"exit"{Style.RESET_ALL} ein, um das Programm zu beenden\n')
 
     for idx, action in enumerate(actions):
         print(f"{idx+1}. {action}")
@@ -53,7 +53,7 @@ def handle_location_check(storage: Storage, name: str) -> tuple[int, "Location"]
     """
     idx, loc = storage.get_location_by_name(name)
     if not loc:
-        print_error("Location not found!")
+        print_error("Standort nicht gefunden!")
     return idx, loc
 
 
@@ -64,7 +64,7 @@ def handle_printer_check(storage: Storage, ip: str) -> "Printer":
     """
     printer = storage.get_printer_by_ip(ip)
     if not printer:
-        print_error("Printer not found!")
+        print_error("Drucker nicht gefunden!")
     return printer
 
 

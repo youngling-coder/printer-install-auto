@@ -47,7 +47,7 @@ class Location:
         if self.__is_printer_unique(printer):
             self.__printers.append(printer)
 
-    def to_str(self, idx: int) -> str:
+    def to_str(self, idx: int = 0) -> str:
         """
         Gibt eine formatierte Zeichenkette für die Standortübersicht zurück.
         Beispiel: "1. Standortname"
@@ -73,7 +73,7 @@ class Location:
 
                 # Fortschrittsanzeige während der Verfügbarkeitsprüfung
                 print(
-                    f"\r{Style.BRIGHT + Fore.CYAN}[ Availability check... ] {Fore.RESET}|{"█" * filled}{" " * (20 - filled)}| {(percent * 100):.2f}%{Style.RESET_ALL}",
+                    f"\r{Style.BRIGHT + Fore.CYAN}[ Verfügbarkeitsprüfung... ] {Fore.RESET}|{"█" * filled}{" " * (20 - filled)}| {(percent * 100):.2f}%{Style.RESET_ALL}",
                     end="",
                     flush=True,
                 )
@@ -145,7 +145,7 @@ class Printer:
             model=data["model"],
         )
 
-    def to_str(self, idx: int) -> str:
+    def to_str(self, idx: int = 0) -> str:
         """
         Gibt eine formatierte Tabellenzeile mit Druckerinformationen zurück,
         inklusive Verfügbarkeitsstatus.

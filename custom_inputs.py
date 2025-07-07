@@ -40,11 +40,11 @@ def get_ip_input(storage) -> str:
     """
     while True:
         try:
-            value = get_generic_input("Enter printer's IP address: ")
+            value = get_generic_input("IP-Addresse des Druckers eingeben: ")
 
             if not storage.is_ip_valid(value):
                 raise ValueError(
-                    f"{Style.BRIGHT + Fore.RED}Entered IP is invalid!\n{Style.RESET_ALL}"
+                    f"{Style.BRIGHT + Fore.RED}Ungültiger Wert!\n{Style.RESET_ALL}"
                 )
 
             return value
@@ -65,7 +65,7 @@ def get_integer_input(
             value = int(get_generic_input(prompt, optional))
 
             if range_ and (value not in range_):
-                raise IndexError("Value is out of range!\n")
+                raise IndexError("Wert liegt außerhalb des gültigen Bereichs!\n")
 
             return value
 
@@ -73,7 +73,7 @@ def get_integer_input(
             if optional:
                 return ""
 
-            utils.print_error("Incompatible value!\n")
+            utils.print_error("Ungültiger Wert!\n")
 
         except IndexError as e:
             utils.print_error(e)
@@ -87,7 +87,7 @@ def get_printer_index_input(location: Location) -> int:
     location.overview()
 
     printer_id = get_integer_input(
-        "Select printer: ", range_=range(1, len(location.get_printers()) + 1)
+        "Drucker auswählen: ", range_=range(1, len(location.get_printers()) + 1)
     )
 
     return printer_id - 1
@@ -100,7 +100,7 @@ def get_location_index_input(locations: list[Location], optional: bool = False) 
     print(utils.prettified_locations_output(locations))
 
     location_id = get_integer_input(
-        "Enter location number: ",
+        "Nummer des Standorts eingeben: ",
         range_=range(1, len(locations) + 1),
         optional=optional,
     )
@@ -118,7 +118,7 @@ def get_current_action() -> int:
     utils.help_()
 
     current_action = get_integer_input(
-        "Enter action you want to perform: ",
+        "Wählen Sie die gewünschte Aktion: ",
         range_=range(1, utils.total_actions_count + 1),
     )
 
@@ -151,10 +151,10 @@ def input_printer_data(storage) -> tuple[Printer, Location]:
 
     if not action_confirmed:
         new_printer["driver_name"] = get_generic_input(
-            "Enter printer's driver name: ", empty=False
+            "Name des Druckertreibers eingeben: ", empty=False
         )
         new_printer["driver_inf_path"] = get_generic_input(
-            "Enter printer's driver path: ", empty=False
+            "Pfad des Druckertreibers eingeben: ", empty=False
         )
 
     printer = Printer.from_dict(new_printer)

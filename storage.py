@@ -23,17 +23,17 @@ class Storage:
         Speichert Änderungen direkt in der JSON-Datei.
         """
         print()
-        print(printer.to_str(0))
+        print(printer.to_str())
         print(
-            f'{Style.BRIGHT}Will be added to "{Fore.CYAN + location.name + Fore.RESET}"\n'
+            f'{Style.BRIGHT}Wird zu "{Fore.CYAN + location.name + Fore.RESET} hinzugefügt"\n'
         )
 
-        action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
+        action_confirmed = custom_inputs.get_yn_confirmation("Fortfahren? [Y/n]: ")
 
         if action_confirmed:
             location.add_printer(printer)
             print(
-                f"{Style.BRIGHT + Fore.GREEN}✅ Printer added successfully!{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.GREEN}✅ Drucker wurde erfolgreich hinzugefügt!{Style.RESET_ALL}"
             )
             self.write_dict_as_json()
 
@@ -51,18 +51,18 @@ class Storage:
         if self.get_location_by_name(location_name)[1]:
             if output:
                 print(
-                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location_name}' already exists!{Style.RESET_ALL}"
+                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Standort '{location_name}' existiert bereits!{Style.RESET_ALL}"
                 )
         else:
             action_confirmed = True
             if confirm:
-                action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
+                action_confirmed = custom_inputs.get_yn_confirmation("Fortfahren? [Y/n]: ")
 
             if action_confirmed:
                 self.__locations.append(Location(location_name))
                 if output:
                     print(
-                        f"{Style.BRIGHT + Fore.GREEN}✅ Location '{location_name}' is created!{Style.RESET_ALL}"
+                        f"{Style.BRIGHT + Fore.GREEN}✅ Standort '{location_name}' wurde erfolgreich erstellt!{Style.RESET_ALL}"
                     )
                 if save:
                     self.write_dict_as_json()
@@ -77,20 +77,20 @@ class Storage:
 
         if location and location.get_printers():
             print(
-                f"{Style.BRIGHT + Fore.YELLOW}⚠️  Location '{location.name}' contain printers!{Fore.RESET} Delete all the printers from this location first!{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.YELLOW}⚠️  Standort '{location.name}' enthält noch Drucker!{Fore.RESET} Löschen Sie zuerst alle Drucker aus diesem Standort!{Style.RESET_ALL}"
             )
         else:
             try:
-                action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
+                action_confirmed = custom_inputs.get_yn_confirmation("Fortfahren? [Y/n]: ")
                 if action_confirmed:
                     self.__locations.remove(location)
                     print(
-                        f"{Style.BRIGHT + Fore.GREEN}✅ '{location.name}' location is removed!{Style.RESET_ALL}"
+                        f"{Style.BRIGHT + Fore.GREEN}✅ '{location.name}' Standort wurde erfolgreich entfernt{Style.RESET_ALL}"
                     )
                     self.write_dict_as_json()
             except ValueError:
                 print(
-                    f"{Style.BRIGHT + Fore.YELLOW}⚠️  Skipping '{location.name}' as it is not present in the list!{Style.RESET_ALL}"
+                    f"{Style.BRIGHT + Fore.YELLOW}⚠️ '{location.name}' wird übersprungen, da er nicht in der Liste vorhanden ist!{Style.RESET_ALL}"
                 )
 
     def remove_printer_from_location(
@@ -100,11 +100,11 @@ class Storage:
         Entfernt einen bestimmten Drucker von einem bestimmten Standort – nach Bestätigung.
         """
         print(
-            f"{Fore.YELLOW + Style.BRIGHT}⚠️  All the info about this printer will be removed!{Style.RESET_ALL}"
+            f"{Fore.YELLOW + Style.BRIGHT}⚠️  Alle Infos zu diesem Drucker werden entfernt!{Style.RESET_ALL}"
         )
-        print(printer.to_str(0))
+        print(printer.to_str())
 
-        action_confirmed = custom_inputs.get_yn_confirmation("Proceed? [Y/n]: ")
+        action_confirmed = custom_inputs.get_yn_confirmation("Fortfahren? [Y/n]: ")
 
         if action_confirmed:
             location_printers = location.get_printers()
@@ -113,7 +113,7 @@ class Storage:
                     location.get_printers().pop(idx)
 
             print(
-                f"{Style.BRIGHT + Fore.GREEN}✅ Printer removed successfully!{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.GREEN}✅ Drucker wurde erfolgreich entfernt!{Style.RESET_ALL}"
             )
             self.write_dict_as_json()
 
@@ -188,7 +188,7 @@ class Storage:
         """
         if not os.path.exists(path):
             raise FileNotFoundError(
-                f"{Style.BRIGHT + Fore.RED}JSON file not found!{Style.RESET_ALL}"
+                f"{Style.BRIGHT + Fore.RED}JSON-Datei nicht gefunden!{Style.RESET_ALL}"
             )
 
         with open(path, "r") as drucker_file:
@@ -215,12 +215,12 @@ class Storage:
         """
         if manual:
             backup_path = custom_inputs.get_generic_input(
-                f"{Style.BRIGHT + Fore.CYAN}[Optional]{Style.RESET_ALL} Enter path or filename: "
+                f"{Style.BRIGHT + Fore.CYAN}[ Optional ]{Style.RESET_ALL} Pfad oder Dateiname eingeben: "
             )
 
             if os.path.exists(backup_path):
                 action_confirmed = custom_inputs.get_yn_confirmation(
-                    f"{Style.BRIGHT + Fore.YELLOW}File already exists! Proceed? [Y/n]: "
+                    f"{Style.BRIGHT + Fore.YELLOW}Datei existiert bereits! Fortfahren? [Y/n]: "
                 )
                 if not action_confirmed:
                     return
@@ -234,7 +234,7 @@ class Storage:
         shutil.copy2(self.__filename, backup_path)
 
         print(
-            f"{Style.BRIGHT + Fore.GREEN}✅ {"[ Auto ]" if not manual else ""}{Fore.RESET} Backup created successfully!{Style.RESET_ALL}"
+            f"{Style.BRIGHT + Fore.GREEN}✅ {"[ Auto ]" if not manual else ""}{Fore.RESET} Backup wurde erfolgreich erstellt!{Style.RESET_ALL}"
         )
 
     def restore_from_backup(self) -> None:
@@ -242,14 +242,14 @@ class Storage:
         Stellt den Zustand aus einer Backup-Datei wieder her.
         """
         backup_path = custom_inputs.get_generic_input(
-            f"{Style.BRIGHT + Fore.CYAN}[Optional]{Style.RESET_ALL} Enter path or filename: "
+            f"{Style.BRIGHT + Fore.CYAN}[ Optional ]{Style.RESET_ALL} Pfad oder Dateiname eingeben: "
         )
 
         if not backup_path:
             backup_path = self.__backup_file
 
         action_confirmed = custom_inputs.get_yn_confirmation(
-            f"{Style.BRIGHT + Fore.YELLOW}⚠️  Current storage file will be overwritten!{Fore.RESET} Proceed? [Y/n]:{Style.RESET_ALL} "
+            f"{Style.BRIGHT + Fore.YELLOW}⚠️  Die aktuelle Speicherdatei wird überschrieben!{Fore.RESET} Fortfahren? [Y/n]:{Style.RESET_ALL} "
         )
 
         if action_confirmed:
@@ -257,7 +257,7 @@ class Storage:
                 shutil.copy2(backup_path, self.__filename)
                 self.load_from_json()
                 print(
-                    f"{Style.BRIGHT + Fore.GREEN}✅ Successfully restored from backup!{Style.RESET_ALL}"
+                    f"{Style.BRIGHT + Fore.GREEN}✅ Erfolgreich aus Backup wiederhergestellt!{Style.RESET_ALL}"
                 )
             except Exception as e:
                 utils.print_error(e)

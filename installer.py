@@ -16,12 +16,12 @@ class Installer:
         3. Fügt den Drucker hinzu
         """
 
-        action_confirmed = get_yn_confirmation("Procceed with installation? [Y/n]: ")
+        action_confirmed = get_yn_confirmation("Installation fortsetzen? [Y/n]: ")
 
         is_printer_available = self.__printer.is_available()
 
         if not is_printer_available:
-            print_error("Printer is unavailable!")
+            print_error("Drucker ist nicht erreichbar!")
             return
 
         if action_confirmed:
@@ -49,7 +49,7 @@ class Installer:
             )
             self.__run_command(install_command)
 
-            print(f"✅ Printer '{self.__printer.name}' installed successfully!")
+            print(f"✅ Drucker '{self.__printer.name}' wurde erfolgreich installiert!")
 
     @staticmethod
     def __run_command(command: str) -> None:
@@ -59,6 +59,6 @@ class Installer:
         print(f"Running: {command}")
         result = subprocess.run(command, shell=True, capture_output=True, text=True)
         if result.returncode != 0:
-            print("Error:", result.stderr)
+            print("Fehler:", result.stderr)
         else:
-            print("Success:", result.stdout)
+            print("Erfolg:", result.stdout)
