@@ -37,11 +37,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
     install.add_argument("ip")
 
     # Standort erstellen
-    create_loc = subparsers.add_parser("create-location", help="Einen neuen Standort erstellen")
+    create_loc = subparsers.add_parser(
+        "create-location", help="Einen neuen Standort erstellen"
+    )
     create_loc.add_argument("location_name")
 
     # Standort entfernen
-    remove_loc = subparsers.add_parser("remove-location", help="Einen Standort entfernen")
+    remove_loc = subparsers.add_parser(
+        "remove-location", help="Einen Standort entfernen"
+    )
     remove_loc.add_argument("location_name")
 
     # Backup wiederherstellen

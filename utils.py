@@ -21,7 +21,9 @@ def help_() -> None:
     """
     Gibt dem Benutzer eine Liste aller verfügbaren Aktionen aus.
     """
-    print(f'Geben Sie {Style.BRIGHT}"exit"{Style.RESET_ALL} ein, um das Programm zu beenden\n')
+    print(
+        f'Geben Sie {Style.BRIGHT}"exit"{Style.RESET_ALL} ein, um das Programm zu beenden\n'
+    )
 
     for idx, action in enumerate(actions):
         print(f"{idx+1}. {action}")

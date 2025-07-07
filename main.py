@@ -120,7 +120,9 @@ def interactive_main():
 
             case 5:
                 # Neuen Standort anlegen
-                name = get_generic_input("Name des neuen Standorts eingeben: ", empty=False)
+                name = get_generic_input(
+                    "Name des neuen Standorts eingeben: ", empty=False
+                )
                 storage.create_location(name, confirm=True)
 
             case 6:

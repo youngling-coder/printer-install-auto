@@ -56,7 +56,9 @@ class Storage:
         else:
             action_confirmed = True
             if confirm:
-                action_confirmed = custom_inputs.get_yn_confirmation("Fortfahren? [Y/n]: ")
+                action_confirmed = custom_inputs.get_yn_confirmation(
+                    "Fortfahren? [Y/n]: "
+                )
 
             if action_confirmed:
                 self.__locations.append(Location(location_name))
@@ -81,7 +83,9 @@ class Storage:
             )
         else:
             try:
-                action_confirmed = custom_inputs.get_yn_confirmation("Fortfahren? [Y/n]: ")
+                action_confirmed = custom_inputs.get_yn_confirmation(
+                    "Fortfahren? [Y/n]: "
+                )
                 if action_confirmed:
                     self.__locations.remove(location)
                     print(
