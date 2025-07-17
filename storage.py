@@ -112,10 +112,8 @@ class Storage:
 
         if action_confirmed:
             location_printers = location.get_printers()
-            print(location_printers)
             for idx in range(len(location_printers)):
                 if location_printers[idx].ip == printer.ip:
-                    print(idx)
                     location.get_printers().pop(idx)
                     break
 
