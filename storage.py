@@ -113,7 +113,7 @@ class Storage:
         if action_confirmed:
             location_printers = location.get_printers()
             for idx in range(len(location_printers)):
-                if location_printers[idx].ip == printer.ip:
+                if location_printers[idx].dns == printer.dns:
                     location.get_printers().pop(idx)
                     break
 
@@ -122,12 +122,12 @@ class Storage:
             )
             self.write_dict_as_json()
 
-    def get_printer_by_ip(self, ip: str) -> Printer:
+    def get_printer_by_dns(self, dns: str) -> Printer:
         """
-        Gibt ein Printer-Objekt anhand der IP-Adresse zurück.
+        Gibt ein Printer-Objekt anhand des DNS-Namens zurück.
         """
         for printer in self.get_printers():
-            if printer.ip == ip:
+            if printer.dns == dns:
                 return printer
         return
 
@@ -137,21 +137,21 @@ class Storage:
         """
         return self.__locations[location_idx]
 
-    def is_ip_unique(self, ip: str) -> bool:
+    def is_dns_unique(self, dns: str) -> bool:
         """
-        Prüft, ob eine IP-Adresse bereits existiert.
+        Prüft, ob ein DNS-Name bereits existiert.
         """
         for printer in self.get_printers():
-            if printer.ip == ip:
+            if printer.dns == dns:
                 return False
         return True
 
-    def is_ip_valid(self, ip: str) -> bool:
+    def is_dns_valid(self, dns: str) -> bool:
         """
-        Prüft, ob eine IP-Adresse gültig **und** eindeutig ist.
+        Prüft, ob ein DNS-Name gültig **und** eindeutig ist.
         """
-        ip_regex = re.compile(r"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$")
-        return bool(ip_regex.match(ip) and self.is_ip_unique(ip))
+        dns_regex = re.compile(r"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$")
+        return bool(dns_regex.match(dns) and self.is_dns_unique(dns))
 
     def get_location_by_name(self, name: str) -> tuple[int, Location]:
         """

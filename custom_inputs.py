@@ -33,16 +33,16 @@ def get_yn_confirmation(prompt: str) -> bool:
     return confirmation.lower().startswith("y") or confirmation == ""
 
 
-def get_ip_input(storage) -> str:
+def get_dns_input(storage) -> str:
     """
-    Fordert die Eingabe einer IP-Adresse vom Benutzer an
+    Fordert die Eingabe eines DNS-Namens vom Benutzer an
     und überprüft deren Gültigkeit mithilfe des Storage-Objekts.
     """
     while True:
         try:
-            value = get_generic_input("IP-Addresse des Druckers eingeben: ")
+            value = get_generic_input("DNS-Namen des Druckers eingeben: ")
 
-            if not storage.is_ip_valid(value):
+            if not storage.is_dns_valid(value):
                 raise ValueError(
                     f"{Style.BRIGHT + Fore.RED}Ungültiger Wert!\n{Style.RESET_ALL}"
                 )
@@ -135,7 +135,7 @@ def input_printer_data(storage) -> tuple[Printer, Location]:
     )
     new_printer = {}
 
-    new_printer["ip"] = get_ip_input(storage)
+    new_printer["dns"] = get_dns_input(storage)
     new_printer["name"] = get_generic_input("Enter printer's name: ", empty=False)
     new_printer["model"] = get_generic_input("Enter printer's model: ", empty=False)
 

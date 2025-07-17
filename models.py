@@ -33,16 +33,16 @@ class Location:
 
     def __is_printer_unique(self, target: "Printer") -> bool:
         """
-        Prüft, ob ein Drucker (nach IP-Adresse) bereits in der Liste enthalten ist.
+        Prüft, ob ein Drucker (nach DNS-Namen) bereits in der Liste enthalten ist.
         """
         for printer in self.__printers:
-            if target.ip == printer.ip:
+            if target.dns == printer.dns:
                 return False
         return True
 
     def add_printer(self, printer: "Printer") -> None:
         """
-        Fügt den Drucker zur Standortliste hinzu, falls die IP-Adresse eindeutig ist.
+        Fügt den Drucker zur Standortliste hinzu, falls der DNS-Name eindeutig ist.
         """
         if self.__is_printer_unique(printer):
             self.__printers.append(printer)
@@ -65,7 +65,7 @@ class Location:
 
         if printers:
             table = PrettyTable()
-            table.field_names = ["#", "Name", "IP", "Modell", "Treiber", "Verfügbar"]
+            table.field_names = ["#", "Name", "DNS-Name", "Modell", "Treiber", "Verfügbar"]
 
             for p_idx, printer in enumerate(printers):
                 percent = (p_idx + 1) / len(printers)
@@ -89,7 +89,7 @@ class Location:
                     [
                         p_idx + 1,
                         printer.name,
-                        printer.ip,
+                        printer.dns,
                         printer.model,
                         printer.driver_name,
                         status_icon,
@@ -101,10 +101,10 @@ class Location:
 
 class Printer:
     def __init__(
-        self, ip: str, name: str, driver_inf_path: str, driver_name: str, model: str
+        self, dns: str, name: str, driver_inf_path: str, driver_name: str, model: str
     ):
-        # Drucker-IP-Adresse
-        self.ip = ip
+        # Drucker-DNS-Name
+        self.dns = dns
         # Druckername
         self.name = name
         # Pfad zur .INF-Treiberdatei
@@ -116,11 +116,11 @@ class Printer:
 
     def is_available(self, port: int = 80, timeout: float = 1.0) -> bool:
         """
-        Prüft, ob der Drucker über die angegebene IP auf dem Port erreichbar ist.
+        Prüft, ob der Drucker über die angegebene DNS auf dem Port erreichbar ist.
         Standardmäßig wird Port 80 verwendet.
         """
         try:
-            with socket.create_connection((self.ip, port), timeout=timeout):
+            with socket.create_connection((self.dns, port), timeout=timeout):
                 return True
         except (socket.timeout, ConnectionRefusedError, OSError):
             return False
@@ -138,7 +138,7 @@ class Printer:
         Erwartet die gleichen Schlüssel wie die Attribute der Klasse.
         """
         return cls(
-            ip=data["ip"],
+            dns=data["dns"],
             name=data["name"],
             driver_inf_path=data["driver_inf_path"],
             driver_name=data["driver_name"],
@@ -151,7 +151,7 @@ class Printer:
         inklusive Verfügbarkeitsstatus.
         """
         table = PrettyTable()
-        table.field_names = ["#", "Name", "IP", "Modell", "Treiber", "Verfügbar"]
+        table.field_names = ["#", "Name", "DNS-Name", "Modell", "Treiber", "Verfügbar"]
 
         status = self.is_available()
         status_icon = (
@@ -164,7 +164,7 @@ class Printer:
             [
                 idx + 1,
                 self.name,
-                self.ip,
+                self.dns,
                 self.model,
                 self.driver_name,
                 status_icon,

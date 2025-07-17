@@ -34,7 +34,7 @@ def cli_main(args):
             # Erstellt ein Printer-Objekt aus den Argumenten
             printer = Printer.from_dict(
                 {
-                    "ip": args.ip,
+                    "dns": args.dns,
                     "name": args.name,
                     "driver_inf_path": args.driver_inf_path,
                     "model": args.model,
@@ -49,15 +49,15 @@ def cli_main(args):
 
         case "remove":
             # Holt Drucker- und Standortdaten aus den Argumenten
-            printer = utils.handle_printer_check(storage, args.ip)
+            printer = utils.handle_printer_check(storage, args.dns)
             _, location = utils.handle_location_check(storage, args.location_name)
             if printer and location:
                 # Entfernt Drucker vom Standort
                 storage.remove_printer_from_location(printer, location)
 
         case "install":
-            # Holt Drucker anhand der IP und startet Installation
-            printer = utils.handle_printer_check(storage, args.ip)
+            # Holt Drucker anhand der DNS und startet Installation
+            printer = utils.handle_printer_check(storage, args.dns)
             if printer:
                 Installer(printer).run()
 

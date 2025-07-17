@@ -59,12 +59,12 @@ def handle_location_check(storage: Storage, name: str) -> tuple[int, "Location"]
     return idx, loc
 
 
-def handle_printer_check(storage: Storage, ip: str) -> "Printer":
+def handle_printer_check(storage: Storage, dns: str) -> "Printer":
     """
-    Sucht einen Drucker anhand seiner IP im Storage.
-    Gibt Fehler aus, wenn kein Drucker mit dieser IP existiert.
+    Sucht einen Drucker anhand seines DNS-Namens im Storage.
+    Gibt Fehler aus, wenn kein Drucker mit diesem DNS-Namen existiert.
     """
-    printer = storage.get_printer_by_ip(ip)
+    printer = storage.get_printer_by_dns(dns)
     if not printer:
         print_error("Drucker nicht gefunden!")
     return printer

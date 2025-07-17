@@ -21,20 +21,20 @@ def build_arg_parser() -> argparse.ArgumentParser:
     # Drucker hinzufügen
     add = subparsers.add_parser("add", help="Einen Drucker hinzufügen")
     add.add_argument("location_name")
-    add.add_argument("ip")
+    add.add_argument("dns")
     add.add_argument("name")
     add.add_argument("model")
     add.add_argument("driver_name")
     add.add_argument("driver_inf_path")
 
-    # Drucker entfernen (per IP und Standort)
+    # Drucker entfernen (per DNS und Standort)
     rem = subparsers.add_parser("remove", help="Einen Drucker entfernen")
-    rem.add_argument("ip")
+    rem.add_argument("dns")
     rem.add_argument("location_name")
 
     # Drucker installieren
     install = subparsers.add_parser("install", help="Einen Drucker installieren")
-    install.add_argument("ip")
+    install.add_argument("dns")
 
     # Standort erstellen
     create_loc = subparsers.add_parser(

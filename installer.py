@@ -25,14 +25,14 @@ class Installer:
             return
 
         if action_confirmed:
-            # Standard-Portname basierend auf der IP-Adresse, falls nicht übergeben
+            # Standard-Portname basierend auf dem DNS-Namen, falls nicht übergeben
             if not port_name:
-                port_name = f"IP_{self.__printer.ip}"
+                port_name = f"DNS_{self.__printer.dns}"
 
             # Erstellt TCP/IP-Port für den Drucker
             port_command = (
                 f'cscript "C:\\Windows\\System32\\Printing_Admin_Scripts\\de-DE\\prnport.vbs" '
-                f"-a -r {port_name} -h {self.__printer.ip} -o raw -n 9100"
+                f"-a -r {port_name} -h {self.__printer.dns} -o raw -n 9100"
             )
             self.__run_command(port_command)
 
