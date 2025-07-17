@@ -19,7 +19,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     overview.add_argument("--location", required=False)
 
     # Drucker hinzufügen
-    add = subparsers.add_parser("add", help="Einen Drucker hinzufügen")
+    add = subparsers.add_parser("add", help="Neuen Drucker erstellen")
     add.add_argument("location_name")
     add.add_argument("dns")
     add.add_argument("name")

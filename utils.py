@@ -4,7 +4,7 @@ from storage import Storage
 # Liste aller möglichen Aktionen, die der Benutzer im interaktiven Modus auswählen kann.
 actions = [
     "Druckerübersicht anzeigen",
-    "Einen Drucker hinzufügen",
+    "Neuen Drucker erstellen",
     "Einen Drucker entfernen",
     "Einen Drucker installieren",
     "Einen neuen Standort erstellen",
